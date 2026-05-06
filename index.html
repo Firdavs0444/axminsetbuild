@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <header>
+        <img class="img1" src="./Без названия.png" alt="Logo">
+        <div class="nav-links">
+            <h6>
+                <a class="txt1" href="#">BIZ HAQQIMIZDA</a>
+            </h6>
+            <h6>
+                <a class="txt2" href="#">BIZ BILAN BOG'LANISH</a>
+            </h6>
+            <h6>
+                <a class="txt3" href="#">SHIKOYAT</a>
+            </h6>
+        </div>
+        
+        <div class="social-links">
+            <p>
+                <a class="link1" href="https://www.instagram.com/_botir_kovka.uz?igsh=MXdlOTBoM2MzdnJjYQ%3D%3D">Instagram</a>
+            </p>
+            <p>
+                <a class="link2" href="https://t.me/tkhrvf">Telegram</a>
+            </p>
+        </div>
+
+        <div class="header-right">
+            <button id="darkBtn">Fon almashtirish</button>
+            <button id="signInBtn">Sign in</button>
+            <button id="signUpBtn">Sign up</button>
+            <button id="logOutBtn" style="display: none;">Log out</button>
+        </div>
+    </header>
+
+    <div id="signInModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Kirish (Sign In)</h2>
+            <form id="signInForm">
+                <label for="loginEmail">Gmail yoki Telefon raqam:</label>
+                <input type="text" id="loginEmail" required placeholder="example@gmail.com yoki +998901234567">
+                
+                <label for="loginPassword">Parol:</label>
+                <input type="password" id="loginPassword" required>
+                
+                <button type="submit">Kirish</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="signUpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ro'yxatdan o'tish (Sign Up)</h2>
+            <form id="signUpForm">
+                <label for="regEmail">Gmail:</label>
+                <input type="email" id="regEmail" required placeholder="example@gmail.com">
+                
+                <label for="regPhone">Telefon raqam:</label>
+                <input type="tel" id="regPhone" required placeholder="+998901234567">
+                
+                <label for="regPassword">Parol:</label>
+                <input type="password" id="regPassword" required>
+                
+                <button type="submit">Ro'yxatdan o'tish</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <div class="card1">
+            <img src="./img1.png" class="card-img" alt="Darvoza">
+            <h3 class="card-title">Darvoza</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img2.png" class="card-img" alt="Reshodka">
+            <h3 class="card-title">Reshodka</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img3.png" class="card-img" alt="Zina">
+            <h3 class="card-title">Zina</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img4.png" class="card-img" alt="Naves">
+            <h3 class="card-title">Naves</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img5.png" class="card-img" alt="Card 5">
+            <h3 class="card-title">Sarlavha 5</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img6.png" class="card-img" alt="Card 6">
+            <h3 class="card-title">Sarlavha 6</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img7.png" class="card-img" alt="Card 7">
+            <h3 class="card-title">Sarlavha 7</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+
+        <div class="card1">
+            <img src="./img8.png" class="card-img" alt="Card 8">
+            <h3 class="card-title">Sarlavha 8</h3>
+            <a href="#">
+                <p class="card-text">Ko'proq</p>
+            </a>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="./main.js"></script>
+    
+</body>
+
+</html>
