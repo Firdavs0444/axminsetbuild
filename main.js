@@ -6,14 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // --- TOVARLARNI DOIMIY SAQLASH (VERCEL UCHUN OPTIMIZATSIYA) ---
-    // Agar localStorage bo'sh bo'lsa, quyidagi boshlang'ich mahsulotlar avtomat yuklanadi
     const defaultProducts = [
         { id: 1, name: "Premium Kovka Darvoza", price: "Kelishuv asosida", image: "./assets/Без названия.png" },
         { id: 2, name: "Zamonaviy Panjara", price: "1 200 000 so'm / m²", image: "./assets/Без названия.png" },
         { id: 3, name: "Sifatli Naves", price: "Kelishuv asosida", image: "./assets/Без названия.png" }
     ];
 
-    // Agar admindan hali tovar qo'shilmagan bo'lsa, default tovarlarni o'rnatamiz
     if (!localStorage.getItem('adminProducts')) {
         localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
     }
@@ -69,8 +67,63 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ------------------------------------------------------------
 
+    // ------------------------------------------------------------
+    // 🔥 YANGI: RASMNI FULL-SCREEN (LIGHTBOX) REJIMIDA OCHISH LOGIKASI
+    // ------------------------------------------------------------
+    const lightbox = document.getElementById('imageLightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.querySelector('.lightbox-close');
+
+    if (container && lightbox && lightboxImg) {
+        // Event Delegation orqali kartadagi rasm bosilganini aniqlaymiz
+        container.addEventListener('click', (event) => {
+            const clickedImg = event.target.closest('.card-img');
+            if (clickedImg) {
+                lightbox.style.display = 'flex'; // Fullscreen oynani ochish
+                lightboxImg.src = clickedImg.src; // Bosilgan rasm manzilini o'tkazish
+                document.body.style.overflow = 'hidden'; // Orqa fon skroll bo'lmaydi
+            }
+        });
+    }
+
+    // Modalni "X" (Yopish) tugmasi bosilganda yopish
+    if (lightboxClose) {
+        lightboxClose.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Skrollni joyiga qaytarish
+        });
+    }
+
+    // Modalni qora fon (bo'sh joy) bosilganda ham yopish
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // ------------------------------------------------------------
+    // 🔥 YANGI: KATEGORIYA TUGMALARINING ACTIVE HOLATI (SLIDER)
+    // ------------------------------------------------------------
+    const catButtons = document.querySelectorAll('.cat-btn');
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Avvalgi active tugmadan klassni olib tashlaymiz
+            document.querySelector('.cat-btn.active')?.classList.remove('active');
+            // Bosilgan tugmaga active klassini qo'shamiz
+            btn.classList.add('active');
+            
+            console.log(`${btn.textContent} toifasi tanlandi.`);
+            // Kelajakda toifaga qarab filterlash logikasini shu yerga ulashingiz mumkin
+        });
+    });
+
+    // ------------------------------------------------------------
+    // ESKI SIGN-IN, SIGN-UP VA DIZAYN ELEMENTLARI LOGIKASI
+    // ------------------------------------------------------------
     const about = document.querySelector('.txt1');
     const phone = document.querySelector('.txt2');
     const jaloba = document.querySelector('.txt3');

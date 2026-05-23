@@ -29,11 +29,17 @@
         </div>
     </header>
 
-    <!-- Main faqat bitta toza konteyner bo'lib qoldi -->
-    <main id="productContainer">
-    </main>
+    <div class="category-slider">
+        <button class="cat-btn active">Barchasi</button>
+        <button class="cat-btn">Darvozalar</button>
+        <button class="cat-btn">Panjaralar</button>
+        <button class="cat-btn">Naveslar</button>
+        <button class="cat-btn">Zinapoyalar</button>
+    </div>
 
-    <!-- Sign In Modal -->
+    <main id="productContainer">
+        </main>
+
     <div id="signInModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -50,7 +56,6 @@
         </div>
     </div>
 
-    <!-- Sign Up Modal -->
     <div id="signUpModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -70,59 +75,15 @@
         </div>
     </div>
 
+    <div id="imageLightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightboxImg" src="" alt="Kattalashtirilgan rasm">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="./main.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('productContainer');
-            
-            // localStorage dan mahsulotlarni olish
-            const products = JSON.parse(localStorage.getItem('adminProducts')) || [
-                { id: 1, name: 'Darvoza', price: 'Kelishuv asosida', image: './img1.png' }
-            ];
-
-            container.innerHTML = '';
-
-            if (products.length === 0) {
-                container.innerHTML = `<p style="color: #888; text-align: center; width: 100%; grid-column: 1/-1; font-size: 18px;">Hozircha mahsulotlar mavjud emas.</p>`;
-            } else {
-                // Har bir kartaga tartib bilan chiqishi uchun style="animation-delay" qo'shildi
-                products.forEach((product, index) => {
-                    const cardHTML = `
-                        <div class="card1" style="animation-delay: ${index * 0.08}s;">
-                            <div class="card-img-wrapper">
-                                <img src="${product.image || './img1.png'}" class="card-img" alt="${product.name}">
-                            </div>
-                            <div class="card-info">
-                                <h3 class="card-title">${product.name}</h3>
-                                <p class="card-price">${product.price}</p>
-                                <a href="#" class="more-link">
-                                    <span class="card-text">Ko'proq</span>
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', cardHTML);
-                });
-            }
-
-            // ENGI VA TO'G'RI USUL: "Ko'proq" tugmasini event delegation orqali tekshirish
-            container.addEventListener('click', (event) => {
-                const targetLink = event.target.closest('.more-link');
-                if (targetLink) {
-                    event.preventDefault();
-                    const isLogged = localStorage.getItem('isLoggedIn') === 'true';
-
-                    if (!isLogged) {
-                        alert("Iltimos, avval ro'yxatdan o'ting yoki tizimga kiring!");
-                    } else {
-                        console.log("Ruxsat berildi. Mahsulot tafsilotlari.");
-                        // Bu yerga mahsulot sahifasiga o'tish kodini yozishingiz mumkin
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>

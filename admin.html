@@ -177,6 +177,15 @@
             white-space: nowrap;
         }
 
+        .badge-category {
+            background-color: rgba(250, 204, 21, 0.15);
+            color: var(--accent-yellow);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
         .btn-action {
             color: var(--accent-yellow);
             text-decoration: none;
@@ -210,7 +219,8 @@
             font-size: 14px;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 12px;
             background-color: #1a1a1a;
@@ -218,6 +228,12 @@
             color: #fff;
             border-radius: 6px;
             margin-bottom: 15px;
+            outline: none;
+        }
+        
+        .form-group select option {
+            background-color: #1a1a1a;
+            color: #fff;
         }
 
         .btn-submit {
@@ -351,7 +367,6 @@
         </div>
 
         <h2 class="section-title">Foydalanuvchilarni boshqarish</h2>
-        <!-- Jadvallar uchun maxsus responsive o'ragich qo'shildi -->
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
@@ -379,7 +394,6 @@
         </div>
 
         <h2 class="section-title" style="margin-top: 40px;">Mahsulotlar katalogini boshqarish</h2>
-        <!-- Jadvallar uchun maxsus responsive o'ragich qo'shildi -->
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
@@ -387,6 +401,7 @@
                         <th>ID</th>
                         <th>Rasm</th>
                         <th>Mahsulot nomi</th>
+                        <th>Kategoriya</th>
                         <th>Narxi</th>
                         <th>Holati</th>
                         <th>Amallar</th>
@@ -399,19 +414,26 @@
 
         <div class="form-group">
             <label for="newProductName">Yangi mahsulot nomi:</label>
-            <input type="text" id="newProductName" placeholder="Masalan: Darvoza, Reshodka">
-            <label for="newProductPrice">Narxi:</label>
-            <input type="text" id="newProductPrice" placeholder="Masalan: 1 200 000 so'm yoki $120">
+            <input type="text" id="newProductName" placeholder="Masalan: Premium Kovka Darvoza">
             
-            <label for="newProductImage">Rasm manzili (masalan: ./img1.png):</label>
-            <input type="text" id="newProductImage" placeholder="./img1.png">
+            <label for="newProductCategory">Kategoriya tanlang:</label>
+            <select id="newProductCategory">
+                <option value="Darvoza">Darvoza</option>
+                <option value="Panjara">Panjara</option>
+                <option value="Naves">Naves</option>
+            </select>
+
+            <label for="newProductPrice">Narxi:</label>
+            <input type="text" id="newProductPrice" placeholder="Masalan: 1 200 000 so'm yoki Kelishuv asosida">
+            
+            <label for="newProductImage">Rasm manzili (masalan: ./assets/darvoza.png):</label>
+            <input type="text" id="newProductImage" placeholder="./assets/Без названия.png">
             
             <button class="btn-submit" onclick="addProduct()">Mahsulot qo'shish</button>
         </div>
     </main>
 
     <script>
-        // JS qismidagi o'zgarishlar tegilmadi, faqat HTML jadvallari chiroyli yuklanishi ta'minlandi
         function loadUsers() {
             const tableBody = document.getElementById('userTableBody');
             const totalUsersElement = document.getElementById('totalUsers');
@@ -495,9 +517,20 @@
         function loadProducts() {
             const productTableBody = document.getElementById('productTableBody');
             const totalProductsElement = document.getElementById('totalProducts');
-            const products = JSON.parse(localStorage.getItem('adminProducts')) || [
-                { id: '#01', name: 'Darvoza', price: 'Kelishuv asosida', status: 'Sotuvda', image: './img1.png' }
+            
+            // Default mahsulotlar ham o'z tarkibida kategoriyaga ega bo'lishini ta'minlaymiz
+            const defaultProducts = [
+                { id: '#101', name: "Premium Kovka Darvoza", category: "Darvoza", price: "Kelishuv asosida", image: "./assets/Без названия.png", status: 'Sotuvda' },
+                { id: '#102', name: "Zamonaviy Panjara", category: "Panjara", price: "1 200 000 so'm / m²", image: "./assets/Без названия.png", status: 'Sotuvda' },
+                { id: '#103', name: "Sifatli Naves", category: "Naves", price: "Kelishuv asosida", image: "./assets/Без названия.png", status: 'Sotuvda' }
             ];
+
+            const products = JSON.parse(localStorage.getItem('adminProducts')) || defaultProducts;
+
+            // Agar birinchi marta kirilayotgan bo'lsa va localstorage bo'sh bo'lsa uni default mahsulotlar bilan to'ldiramiz
+            if (!localStorage.getItem('adminProducts')) {
+                localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
+            }
 
             if(totalProductsElement) {
                 totalProductsElement.innerText = products.length;
@@ -506,19 +539,23 @@
             productTableBody.innerHTML = '';
 
             if (products.length === 0) {
-                productTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Mahsulotlar mavjud emas.</td></tr>`;
+                productTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Mahsulotlar mavjud emas.</td></tr>`;
                 return;
             }
 
             products.forEach((product, index) => {
                 let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
+                // Eski tovarlarda kategoriya bo'lmasa default 'Darvoza' qo'yiladi
+                let productCategory = product.category || 'Darvoza'; 
+
                 const row = `
                     <tr>
-                        <td>${product.id || '#' + (index + 1)}</td>
+                        <td>${product.id || '#' + (index + 101)}</td>
                         <td>
-                            <img src="${product.image || './img1.png'}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                            <img src="${product.image || './assets/Без названия.png'}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
                         </td>
                         <td>${product.name}</td>
+                        <td><span class="badge-category">${productCategory}</span></td>
                         <td>${product.price}</td>
                         <td><span class="${statusClass}">${product.status || 'Sotuvda'}</span></td>
                         <td>
@@ -543,8 +580,9 @@
 
         function addProduct() {
             const name = document.getElementById('newProductName').value;
+            const category = document.getElementById('newProductCategory').value;
             const price = document.getElementById('newProductPrice').value;
-            const image = document.getElementById('newProductImage').value || './img1.png';
+            const image = document.getElementById('newProductImage').value || './assets/Без названия.png';
 
             if (!name || !price) {
                 alert("Iltimos, mahsulot nomi va narxini kiriting!");
@@ -557,6 +595,7 @@
             products.push({
                 id: newId,
                 name: name,
+                category: category, // 🔥 Kategoriya bu yerda saqlanadi
                 price: price,
                 image: image,
                 status: 'Sotuvda'
@@ -586,11 +625,13 @@
                 let product = products[index];
 
                 let newName = prompt("Mahsulot nomini o'zgartirish:", product.name);
+                let newCategory = prompt("Mahsulot kategoriyasini o'zgartirish (Darvoza, Panjara, Naves):", product.category || 'Darvoza');
                 let newPrice = prompt("Mahsulot narxini o'zgartirish:", product.price);
-                let newImage = prompt("Mahsulot rasm manzili (URL) ni o'zgartirish:", product.image || './img1.png');
+                let newImage = prompt("Mahsulot rasm manzili (URL) ni o'zgartirish:", product.image || './assets/Без названия.png');
 
-                if (newName && newPrice && newImage) {
+                if (newName && newCategory && newPrice && newImage) {
                     products[index].name = newName;
+                    products[index].category = newCategory; // Tahrirlashda kategoriyani yangilash
                     products[index].price = newPrice;
                     products[index].image = newImage;
                     localStorage.setItem('adminProducts', JSON.stringify(products));
