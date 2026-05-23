@@ -1,211 +1,276 @@
-/* Umumiy sozlamalar */
+/* 1. Umumiy va Global Sozlamalar */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Mobil qurilmada bosilgandagi ko'k fonni yo'qotadi */
+}
+
+:root {
+    --bg-main: #f8fafc;
+    --bg-header: rgba(255, 255, 255, 0.85);
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --primary: #3b82f6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+body.dark {
+    --bg-main: #0f172a;
+    --bg-header: rgba(15, 23, 42, 0.85);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #1e293b;
+    --card-bg: #1e293b;
 }
 
 body {
-    background-color: #f8fafc;
-    color: #1e293b;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
 }
 
-/* Header dizayni (Premium ko'rinish) */
+/* 2. Premium Header va Navigatsiya */
 header {
     width: 100%;
     max-width: 1440px;
-    height: 70px;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid #e2e8f0;
+    height: 75px;
+    background-color: var(--bg-header);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 40px;
     margin: 0 auto;
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: all 0.3s ease;
 }
 
 .img1 {
-    width: 120px;
+    width: 110px;
     height: auto;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
 }
 
 .nav-links {
     display: flex;
-    gap: 25px;
+    gap: 30px;
     align-items: center;
 }
 
 .txt1, .txt2, .txt3 {
-    color: #475569;
+    color: var(--text-muted);
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    transition: color 0.2s, transform 0.2s;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease;
+    position: relative;
+    padding: 4px 0;
 }
 
-.txt1:hover, .txt2:hover, .txt3:hover {
-    color: #10b981;
+/* PC uchun chiroyli chiziqli effekt */
+@media (min-width: 851px) {
+    .txt1::after, .txt2::after, .txt3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--success);
+        transition: width 0.25s ease;
+    }
+    .txt1:hover::after, .txt2:hover::after, .txt3:hover::after {
+        width: 100%;
+    }
 }
 
-.txt1:active, .txt2:active, .txt3:active {
-    transform: scale(0.95);
-}
+.txt1:hover, .txt2:hover, .txt3:hover { color: var(--success); }
 
+/*ijtimoiy tarmoqlar linklari */
 .social-links {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.link1, .link2 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #3b82f6;
-    text-decoration: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    background-color: #eff6ff;
-    transition: 0.2s;
-}
-
-.link1:hover { background-color: #e0f2fe; color: #0369a1; }
-.link2:hover { background-color: #e0e7ff; color: #4338ca; }
-
-.header-right {
     display: flex;
     gap: 12px;
     align-items: center;
 }
 
-/* Tugmalar */
-#darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
+.link1, .link2 {
+    font-size: 13px;
     font-weight: 600;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 20px;
     transition: all 0.2s ease;
 }
+.link1 { color: #e1306c; background-color: rgba(225, 48, 108, 0.08); }
+.link2 { color: #0088cc; background-color: rgba(0, 136, 204, 0.08); }
 
-#darkBtn { background-color: #e2e8f0; color: #334155; }
-#signInBtn { background-color: #3b82f6; color: white; }
-#signUpBtn { background-color: #10b981; color: white; }
-#logOutBtn { background-color: #ef4444; color: white; }
-#adminBtn { background-color: #f59e0b; color: white; }
-
-#darkBtn:hover, #signInBtn:hover, #signUpBtn:hover, #logOutBtn:hover, #adminBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    opacity: 0.95;
+/* 3. Tugmalar va Ularning Mobil holati (Active) */
+.header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
+#darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#darkBtn { background-color: var(--border-color); color: var(--text-main); }
+#signInBtn { background-color: var(--primary); color: white; }
+#signUpBtn { background-color: var(--success); color: white; }
+#logOutBtn { background-color: var(--danger); color: white; }
+#adminBtn { background-color: var(--warning); color: white; }
+
+/* Kompyuter uchun effektlar */
+@media (min-width: 851px) {
+    #darkBtn:hover, #signInBtn:hover, #signUpBtn:hover, #logOutBtn:hover, #adminBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        opacity: 0.95;
+    }
+}
+
+/* TELEFONLAR UCHUN: Bosganda orqaga tarqalish (active) effekti */
 #darkBtn:active, #signInBtn:active, #signUpBtn:active, #logOutBtn:active, #adminBtn:active {
-    transform: translateY(0);
+    transform: scale(0.95);
+    opacity: 0.8;
 }
 
-/* Tarmoq / Grid elementlari (Asosiy qism) */
+/* 4. Mahsulotlar To'plami (Grid va Karta Animatsiyasi) */
 main {
     width: 100%;
     max-width: 1440px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 50px 30px; 
+    gap: 35px;
+    padding: 50px 40px; 
     margin: 0 auto;
 }
 
-/* Zamonaviy Karta (Card) stili */
 .card1 {
-    background-color: white;
-    border-radius: 16px;
+    background-color: var(--card-bg);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f1f5f9;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
     height: 100%;
+    /* Telefonlarda chiroyli chiqishi uchun boshlang'ich animatsiya holati */
+    animation: cardAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.card1:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Har bir karta birin-ketin chiqishi uchun tayyor delay stili */
+.card1:nth-child(1) { animation-delay: 0.05s; }
+.card1:nth-child(2) { animation-delay: 0.1s; }
+.card1:nth-child(3) { animation-delay: 0.15s; }
+.card1:nth-child(4) { animation-delay: 0.2s; }
+
+@media (min-width: 851px) {
+    .card1:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+}
+
+/* Telefon uchun kartani bosgandagi reaksiya */
+.card1:active {
+    transform: scale(0.98);
 }
 
 .card-img-wrapper {
     width: 100%;
-    height: 200px;
+    height: 220px;
     overflow: hidden;
-    background-color: #f1f5f9;
+    position: relative;
+    background-color: rgba(0,0,0,0.02);
 }
 
 .card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.card1:hover .card-img {
-    transform: scale(1.08);
+@media (min-width: 851px) {
+    .card1:hover .card-img { transform: scale(1.06); }
 }
 
 .card-info {
-    padding: 20px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     justify-content: space-between;
-    text-align: center;
 }
 
 .card-title {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-main);
     margin-bottom: 8px;
+    text-align: center;
 }
 
 .card-price {
-    color: #f59e0b;
-    font-weight: 700;
+    color: var(--warning);
+    font-weight: 800;
     font-size: 16px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .more-link {
     text-decoration: none;
     display: block;
-    margin-top: auto;
 }
 
 .card-text {
     display: block;
     width: 100%;
-    padding: 10px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #10b981;
+    text-align: center;
+    padding: 12px;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--success);
     font-weight: 700;
-    border-radius: 8px;
-    transition: all 0.2s;
+    font-size: 14px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
 }
 
-.more-link:hover .card-text {
-    background-color: #10b981;
+/* Telefon va kompyuter uchun umumiy tugma bosilish effekti */
+.more-link:active .card-text, 
+.card1:hover .card-text {
+    background-color: var(--success);
     color: white;
-    border-color: #10b981;
+    border-color: var(--success);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-/* Modallar UI */
+/* 5. Modallar (Premium Glassmorphism) */
 .modal {
     display: none; 
     position: fixed; 
@@ -214,130 +279,141 @@ main {
     top: 0;
     width: 100%; 
     height: 100%; 
-    background-color: rgba(15, 23, 42, 0.6); 
-    backdrop-filter: blur(4px);
+    background-color: rgba(15, 23, 42, 0.4); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
-    background-color: white;
-    margin: 8% auto;
-    padding: 30px;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    background-color: var(--card-bg);
+    margin: 12% auto;
+    padding: 35px;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
     position: relative;
-    animation: slideUp 0.3s ease;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Telefondagi modal joylashuvi */
+@media (max-width: 500px) {
+    .modal-content {
+        margin: 25% auto;
+        padding: 25px;
+    }
 }
 
 .close {
     position: absolute;
-    right: 20px;
-    top: 15px;
-    color: #94a3b8;
-    font-size: 28px;
-    font-weight: bold;
+    right: 24px;
+    top: 20px;
+    color: var(--text-muted);
+    font-size: 26px;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.close:hover { color: #1e293b; }
+.close:hover { color: var(--text-main); }
 
 .modal h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    color: #0f172a;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
 }
 
 form label {
     display: block;
-    margin-top: 14px;
+    margin-top: 16px;
     font-weight: 600;
-    font-size: 14px;
-    color: #475569;
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
 form input {
     width: 100%;
-    padding: 10px 14px;
-    margin-top: 6px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    background-color: var(--bg-main);
+    border: 2px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 12px;
     font-size: 14px;
-    transition: border-color 0.2s;
+    transition: all 0.2s ease;
 }
 
 form input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    border-color: var(--primary);
+    background-color: var(--card-bg);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
 form button {
     width: 100%;
-    padding: 12px;
-    background-color: #3b82f6;
+    padding: 14px;
+    background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 700;
     font-size: 15px;
-    margin-top: 20px;
-    transition: background-color 0.2s;
+    margin-top: 24px;
+    transition: opacity 0.2s;
 }
+form button:active { opacity: 0.8; transform: scale(0.98); }
 
-form button:hover { background-color: #2563eb; }
-
-/* Dark Mode stili */
-body.dark {
-    background-color: #0f172a;
-    color: #f8fafc;
-}
-
-body.dark header {
-    background-color: rgba(15, 23, 42, 0.8);
-    border-bottom-color: #334155;
-}
-
-body.dark .txt1, body.dark .txt2, body.dark .txt3 { color: #cbd5e1; }
-body.dark .txt1:hover, body.dark .dark .txt2:hover, body.dark .txt3:hover { color: #10b981; }
-
-body.dark .card1 {
-    background-color: #1e293b;
-    border-color: #334155;
-}
-
-body.dark .card-title { color: #f8fafc; }
-body.dark .card-text {
-    background-color: #1e293b;
-    border-color: #334155;
-}
-body.dark .modal-content {
-    background-color: #1e293b;
-    color: white;
-}
-body.dark .modal h2 { color: white; }
-body.dark form label { color: #cbd5e1; }
-body.dark form input {
-    background-color: #0f172a;
-    border-color: #334155;
-    color: white;
-}
-
-/* Animatsiyalar */
+/* 6. Animatsiyalar */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes cardAppear { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* Responsivlik */
+/* 7. MAXSUS MOBIL MOSLASHUVCHANLIK (MEDIA QUERIES) */
 @media (max-width: 850px) {
     header {
         flex-direction: column;
         height: auto;
-        gap: 15px;
         padding: 20px;
+        gap: 15px;
     }
-    .nav-links { flex-wrap: wrap; justify-content: center; }
-    main { padding: 30px 15px; gap: 20px; }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .social-links {
+        justify-content: center;
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn {
+        padding: 8px 14px;
+        font-size: 12px;
+        flex-grow: 1; /* Tugmalar ekranga teng yoyiladi */
+        text-align: center;
+    }
+
+    main {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        padding: 30px 15px;
+    }
+    
+    .card-img-wrapper {
+        height: 180px; /* Telefon ekranida ixchamroq ko'rinishi uchun */
+    }
 }

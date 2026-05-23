@@ -87,9 +87,10 @@
             if (products.length === 0) {
                 container.innerHTML = `<p style="color: #888; text-align: center; width: 100%; grid-column: 1/-1; font-size: 18px;">Hozircha mahsulotlar mavjud emas.</p>`;
             } else {
-                products.forEach(product => {
+                // Har bir kartaga tartib bilan chiqishi uchun style="animation-delay" qo'shildi
+                products.forEach((product, index) => {
                     const cardHTML = `
-                        <div class="card1">
+                        <div class="card1" style="animation-delay: ${index * 0.08}s;">
                             <div class="card-img-wrapper">
                                 <img src="${product.image || './img1.png'}" class="card-img" alt="${product.name}">
                             </div>
