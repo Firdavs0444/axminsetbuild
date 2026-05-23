@@ -99,22 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // "Ko'proq" tugmasini tekshirish
-    const moreLinks = document.querySelectorAll('.card1 a');
-    moreLinks.forEach(link => {
-        link.addEventListener('click', (event) => {
-            event.preventDefault();
-
-            const isLogged = localStorage.getItem('isLoggedIn') === 'true';
-
-            if (!isLogged) {
-                alert("Iltimos, avval ro'yxatdan o'ting yoki tizimga kiring!");
-            } else {
-                console.log("Ruxsat berildi");
-            }
-        });
-    });
-
     // 1. Kodni generatsiya qilish
     function sendSmsCode() {
         let otpCode = Math.floor(100000 + Math.random() * 900000);
@@ -146,17 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
             let phoneNum = document.getElementById('regPhone').value;
             let password = document.getElementById('regPassword').value;
 
-            // Foydalanuvchilar massivini olish
             let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
-            // Takroriy ro'yxatdan o'tishni tekshirish
             let userExists = users.some(u => u.email === email || u.phone === phoneNum);
             if (userExists) {
                 alert("Bu Gmail yoki telefon raqam bilan avval ro'yxatdan o'tilgan!");
                 return;
             }
 
-            // Yangi foydalanuvchini saqlash
             users.push({
                 email: email,
                 phone: phoneNum,
@@ -203,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let loginEmail = document.getElementById('loginEmail').value;
             let loginPass = document.getElementById('loginPassword').value;
 
-            // Foydalanuvchilar ro'yxatini olish
             let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
             let user = users.find(u => (u.email === loginEmail || u.phone === loginEmail) && u.password === loginPass);

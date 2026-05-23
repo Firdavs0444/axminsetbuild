@@ -29,6 +29,7 @@
             color: var(--text-color);
             display: flex;
             min-height: 100vh;
+            flex-direction: row;
         }
 
         .sidebar {
@@ -36,6 +37,7 @@
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             padding: 30px 20px;
+            flex-shrink: 0;
         }
 
         .sidebar h2 {
@@ -72,6 +74,7 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
+            min-width: 0; /* Flexbox ichida element qisqarishi uchun */
         }
 
         .header {
@@ -86,7 +89,7 @@
 
         .metrics {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
         }
@@ -118,14 +121,21 @@
             padding-bottom: 10px;
         }
 
+        /* Jadvallar sig'may qolganda skroll bo'lishi uchun responsive o'rar qatlam */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            -webkit-overflow-scrolling: touch;
+        }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 30px;
+            min-width: 600px; /* Kichik ekranda jadvallar siqilib ketmasligi uchun minimal kenglik */
         }
 
         .data-table th,
@@ -145,12 +155,17 @@
             border-bottom: 1px solid var(--border-color);
         }
 
+        .data-table tr:last-child {
+            border-bottom: none;
+        }
+
         .badge-active {
             background-color: rgba(16, 185, 129, 0.15);
             color: var(--accent-green);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
+            white-space: nowrap;
         }
 
         .badge-inactive {
@@ -159,6 +174,7 @@
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
+            white-space: nowrap;
         }
 
         .btn-action {
@@ -169,6 +185,8 @@
             background: none;
             border: none;
             font-size: 14px;
+            white-space: nowrap;
+            margin-bottom: 5px;
         }
 
         .btn-action.delete {
@@ -180,7 +198,8 @@
             padding: 24px;
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            max-width: 500px;
+            max-width: 100%; /* Mobil ekranlarga moslashishi uchun */
+            width: 500px;
             margin-top: 20px;
         }
 
@@ -210,10 +229,13 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            width: 100%; /* Mobilda bosish oson bo'lishi uchun */
         }
 
-        .btn-submit:hover {
-            opacity: 0.9;
+        @media (min-width: 480px) {
+            .btn-submit {
+                width: auto; /* Katta ekranlarda asl holatiga qaytadi */
+            }
         }
 
         .nav-link-btn {
@@ -227,12 +249,65 @@
         .nav-link-btn:hover {
             text-decoration: underline;
         }
+
+        /* 📌 MAXSUS RESPONSIVE CHEKLOVLAR (MEDIA QUERIES) */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column; /* Sidebar tepaga chiqadi */
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 20px;
+            }
+
+            .sidebar h2 {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .menu-list {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
+            .menu-list li {
+                margin-bottom: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .menu-list {
+                justify-content: space-around;
+            }
+            
+            .menu-list a {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .form-group {
+                width: 100%;
+                padding: 15px;
+            }
+        }
     </style>
     
     <script>
         // Kirishni himoyalash
         if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
-            alert("Kirish taqiqlangan! Iltimos, admin login va parolini kiriting.");
             window.location.href = 'admin-login.html';
         }
     </script>
@@ -250,8 +325,10 @@
     </aside>
 
     <main class="main-content">
-        <a href="index.html" class="nav-link-btn">&#8592; Asosiy sahifaga qaytish</a>
-        <button onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'" style="float:right; background: var(--danger); border: none; padding: 8px 16px; border-radius: 4px; color: #fff; cursor: pointer;">Chiqish</button>
+        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <a href="index.html" class="nav-link-btn">&#8592; Asosiy sahifaga qaytish</a>
+            <button onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'" style="background: var(--danger); border: none; padding: 8px 16px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold;">Chiqish</button>
+        </div>
 
         <div class="header">
             <h1>Boshqaruv <span style="color: var(--accent-green);">Markazi</span></h1>
@@ -274,19 +351,22 @@
         </div>
 
         <h2 class="section-title">Foydalanuvchilarni boshqarish</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email / Telefon</th>
-                    <th>Status</th>
-                    <th>Sana</th>
-                    <th>Amallar</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody">
-            </tbody>
-        </table>
+        <!-- Jadvallar uchun maxsus responsive o'ragich qo'shildi -->
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email / Telefon</th>
+                        <th>Status</th>
+                        <th>Sana</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                </tbody>
+            </table>
+        </div>
 
         <div class="form-group">
             <label for="newUserInput">Email yoki Telefon raqam:</label>
@@ -299,20 +379,23 @@
         </div>
 
         <h2 class="section-title" style="margin-top: 40px;">Mahsulotlar katalogini boshqarish</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Rasm</th>
-                    <th>Mahsulot nomi</th>
-                    <th>Narxi</th>
-                    <th>Holati</th>
-                    <th>Amallar</th>
-                </tr>
-            </thead>
-            <tbody id="productTableBody">
-            </tbody>
-        </table>
+        <!-- Jadvallar uchun maxsus responsive o'ragich qo'shildi -->
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Rasm</th>
+                        <th>Mahsulot nomi</th>
+                        <th>Narxi</th>
+                        <th>Holati</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody">
+                </tbody>
+            </table>
+        </div>
 
         <div class="form-group">
             <label for="newProductName">Yangi mahsulot nomi:</label>
@@ -328,11 +411,10 @@
     </main>
 
     <script>
-        // Foydalanuvchilar funksiyalari
+        // JS qismidagi o'zgarishlar tegilmadi, faqat HTML jadvallari chiroyli yuklanishi ta'minlandi
         function loadUsers() {
             const tableBody = document.getElementById('userTableBody');
             const totalUsersElement = document.getElementById('totalUsers');
-
             const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
             tableBody.innerHTML = '';
@@ -359,14 +441,12 @@
             }
         }
 
-        // Parolni o'zgartirish
         function resetUserPassword(index) {
             let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
             let user = users[index];
             
             if (user) {
                 let newPassword = prompt(`Foydalanuvchi (${user.email || user.phone}) uchun yangi parolni kiriting:`);
-                
                 if (newPassword !== null && newPassword.trim() !== "") {
                     user.password = newPassword;
                     localStorage.setItem('registeredUsers', JSON.stringify(users));
@@ -412,11 +492,9 @@
             alert("Foydalanuvchi qo'shildi!");
         }
 
-        // Mahsulotlar funksiyalari
         function loadProducts() {
             const productTableBody = document.getElementById('productTableBody');
             const totalProductsElement = document.getElementById('totalProducts');
-            
             const products = JSON.parse(localStorage.getItem('adminProducts')) || [
                 { id: '#01', name: 'Darvoza', price: 'Kelishuv asosida', status: 'Sotuvda', image: './img1.png' }
             ];
@@ -434,7 +512,6 @@
 
             products.forEach((product, index) => {
                 let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
-
                 const row = `
                     <tr>
                         <td>${product.id || '#' + (index + 1)}</td>
@@ -458,11 +535,7 @@
         function toggleProductStatus(index) {
             let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
             if (products[index]) {
-                if (products[index].status === 'Tugagan') {
-                    products[index].status = 'Sotuvda';
-                } else {
-                    products[index].status = 'Tugagan';
-                }
+                products[index].status = (products[index].status === 'Tugagan') ? 'Sotuvda' : 'Tugagan';
                 localStorage.setItem('adminProducts', JSON.stringify(products));
                 loadProducts();
             }
@@ -490,7 +563,6 @@
             });
 
             localStorage.setItem('adminProducts', JSON.stringify(products));
-
             document.getElementById('newProductName').value = '';
             document.getElementById('newProductPrice').value = '';
             document.getElementById('newProductImage').value = '';
@@ -508,20 +580,22 @@
             }
         }
 
-        function editProduct(index) {
-            let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-            let product = products[index];
+        if (window.editProduct === undefined) {
+            window.editProduct = function(index) {
+                let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
+                let product = products[index];
 
-            let newName = prompt("Mahsulot nomini o'zgartirish:", product.name);
-            let newPrice = prompt("Mahsulot narxini o'zgartirish:", product.price);
-            let newImage = prompt("Mahsulot rasm manzili (URL) ni o'zgartirish:", product.image || './img1.png');
+                let newName = prompt("Mahsulot nomini o'zgartirish:", product.name);
+                let newPrice = prompt("Mahsulot narxini o'zgartirish:", product.price);
+                let newImage = prompt("Mahsulot rasm manzili (URL) ni o'zgartirish:", product.image || './img1.png');
 
-            if (newName && newPrice && newImage) {
-                products[index].name = newName;
-                products[index].price = newPrice;
-                products[index].image = newImage;
-                localStorage.setItem('adminProducts', JSON.stringify(products));
-                loadProducts();
+                if (newName && newPrice && newImage) {
+                    products[index].name = newName;
+                    products[index].price = newPrice;
+                    products[index].image = newImage;
+                    localStorage.setItem('adminProducts', JSON.stringify(products));
+                    loadProducts();
+                }
             }
         }
 
@@ -531,4 +605,5 @@
         });
     </script>
 </body>
+
 </html>

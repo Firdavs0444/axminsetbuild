@@ -146,12 +146,27 @@
                             <img src="${product.image || './img1.png'}" class="card-img" alt="${product.name}">
                             <h3 class="card-title">${product.name}</h3>
                             <p style="color: #facc15; font-weight: bold;">${product.price}</p>
-                            <a href="#">
+                            <a href="#" class="more-link">
                                 <p class="card-text">Ko'proq</p>
                             </a>
                         </div>
                     `;
                     container.insertAdjacentHTML('beforeend', cardHTML);
+                });
+
+                // Kartalar yaratilgandan keyin "Ko'proq" tugmasini tekshirish kodi
+                const moreLinks = document.querySelectorAll('.more-link');
+                moreLinks.forEach(link => {
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        const isLogged = localStorage.getItem('isLoggedIn') === 'true';
+
+                        if (!isLogged) {
+                            alert("Iltimos, avval ro'yxatdan o'ting yoki tizimga kiring!");
+                        } else {
+                            console.log("Ruxsat berildi");
+                        }
+                    });
                 });
             }
         });
