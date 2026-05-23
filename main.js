@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    (function() {
+    (function () {
         if (typeof emailjs !== 'undefined') {
-            emailjs.init("1kSvPg7v02JrWtqYg"); 
+            emailjs.init("1kSvPg7v02JrWtqYg");
         }
     })();
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const signUpBtn = document.getElementById('signUpBtn');
     const signInBtn = document.getElementById('signInBtn');
     const logOutBtn = document.getElementById('logOutBtn');
-    
+
     const signUpModal = document.getElementById('signUpModal');
     const signInModal = document.getElementById('signInModal');
     const closeBtns = document.querySelectorAll('.close');
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logOutBtn) {
         logOutBtn.addEventListener('click', () => {
             const isConfirmed = confirm("Haqiqatan ham tizimdan chiqmoqchimisiz?");
-            
+
             if (isConfirmed) {
                 localStorage.setItem('isLoggedIn', 'false');
                 alert("Sog' bo'ling");
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == signUpModal) {
             signUpModal.style.display = 'none';
         }
@@ -115,6 +115,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 1. Kodni generatsiya qilish
+    function sendSmsCode() {
+        let otpCode = Math.floor(100000 + Math.random() * 900000);
+        localStorage.setItem('generatedCode', otpCode);
+        alert(`SMS: Sizning tasdiqlash kodingiz: ${otpCode}`);
+    }
+
+    // 2. Kiritilgan kodni tekshirish
+    function verifySmsCode() {
+        let enteredCode = document.getElementById('smsCodeInput').value;
+        let savedCode = localStorage.getItem('generatedCode');
+
+        if (enteredCode === savedCode) {
+            alert("Kod to'g'ri! Tizimga xush kelibsiz.");
+            localStorage.setItem('isLoggedIn', 'true');
+            updateUI();
+        } else {
+            alert("Xato kod kiritildi. Iltimos, qayta urinib ko'ring.");
+        }
+    }
+
     // Ro'yxatdan o'tish (Sign Up) funksiyasi
     const signUpForm = document.getElementById('signUpForm');
     if (signUpForm) {
@@ -125,18 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
             let phoneNum = document.getElementById('regPhone').value;
             let password = document.getElementById('regPassword').value;
 
-            // Takroriy ro'yxatdan o'tishni tekshirish
-            let savedEmail = localStorage.getItem('userEmail');
-            let savedPhone = localStorage.getItem('userPhone');
+            // Foydalanuvchilar massivini olish
+            let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
-            if (email === savedEmail || phoneNum === savedPhone) {
+            // Takroriy ro'yxatdan o'tishni tekshirish
+            let userExists = users.some(u => u.email === email || u.phone === phoneNum);
+            if (userExists) {
                 alert("Bu Gmail yoki telefon raqam bilan avval ro'yxatdan o'tilgan!");
-                return; 
+                return;
             }
 
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userPhone', phoneNum);
-            localStorage.setItem('userPassword', password);
+            // Yangi foydalanuvchini saqlash
+            users.push({
+                email: email,
+                phone: phoneNum,
+                password: password,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
             localStorage.setItem('isLoggedIn', 'true');
 
             if (typeof emailjs !== 'undefined') {
@@ -147,12 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     message: `Yangi foydalanuvchi ma'lumotlari: \nGmail: ${email} \nTelefon: ${phoneNum}`
                 };
 
-                // Shablonga so'rov yuborish
                 emailjs.send('service_pn0n1ic', 'template_i5w10ra', templateParams)
-                    .then(function(response) {
+                    .then(function (response) {
                         alert("Xabar muvaffaqiyatli yuborildi!");
                         console.log('SUCCESS!', response.status, response.text);
-                    }, function(error) {
+                    }, function (error) {
                         alert("Xatolik yuz berdi: " + JSON.stringify(error));
                         console.log('FAILED...', error);
                     });
@@ -162,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (signUpModal) {
                 signUpModal.style.display = 'none';
             }
-            
+
             updateUI();
         });
     }
@@ -176,27 +203,27 @@ document.addEventListener('DOMContentLoaded', () => {
             let loginEmail = document.getElementById('loginEmail').value;
             let loginPass = document.getElementById('loginPassword').value;
 
-            let savedEmail = localStorage.getItem('userEmail');
-            let savedPhone = localStorage.getItem('userPhone');
-            let savedPassword = localStorage.getItem('userPassword');
+            // Foydalanuvchilar ro'yxatini olish
+            let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
-            if ((loginEmail === savedEmail || loginEmail === savedPhone) && loginPass === savedPassword) {
+            let user = users.find(u => (u.email === loginEmail || u.phone === loginEmail) && u.password === loginPass);
+
+            if (user) {
                 localStorage.setItem('isLoggedIn', 'true');
 
                 if (typeof emailjs !== 'undefined') {
                     let templateParams = {
                         to_email: 'toxirovf07@gmail.com',
-                        user_email: savedEmail,
-                        user_phone: savedPhone,
-                        message: `Tizimga kirgan foydalanuvchi ma'lumotlari: \nGmail: ${savedEmail} \nTelefon: ${savedPhone}`
+                        user_email: user.email,
+                        user_phone: user.phone,
+                        message: `Tizimga kirgan foydalanuvchi ma'lumotlari: \nGmail: ${user.email} \nTelefon: ${user.phone}`
                     };
 
-                    // To'g'rilangan qism
                     emailjs.send('service_pn0n1ic', 'template_i5w10ra', templateParams)
-                        .then(function(response) {
+                        .then(function (response) {
                             alert("Xabar muvaffaqiyatli yuborildi!");
                             console.log('SUCCESS!', response.status, response.text);
-                        }, function(error) {
+                        }, function (error) {
                             alert("Xatolik yuz berdi: " + JSON.stringify(error));
                             console.log('FAILED...', error);
                         });
@@ -206,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (signInModal) {
                     signInModal.style.display = 'none';
                 }
-                
+
                 updateUI();
             } else {
                 alert("Gmail, telefon raqam yoki parol xato!");

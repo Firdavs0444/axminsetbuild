@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Kirish</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background-color: #161616;
+            border: 1px solid #2a2a2a;
+            padding: 40px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #10b981;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>Admin Kirish</h2>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label>Login:</label>
+                <input type="text" id="adminUser" required placeholder="Loginni kiriting">
+            </div>
+            <div class="form-group">
+                <label>Parol:</label>
+                <input type="password" id="adminPass" required placeholder="Parolni kiriting">
+            </div>
+            <button type="submit">Kirish</button>
+            <div id="errorMsg" class="error"></div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            
+            if (user === 'admin' && pass === '12345') {
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('errorMsg').textContent = 'Login yoki parol xato!';
+            }
+        });
+    </script>
+</body>
+</html>
