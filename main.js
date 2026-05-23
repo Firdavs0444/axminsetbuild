@@ -5,6 +5,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
+    // --- TOVARLARNI DOIMIY SAQLASH (VERCEL UCHUN OPTIMIZATSIYA) ---
+    // Agar localStorage bo'sh bo'lsa, quyidagi boshlang'ich mahsulotlar avtomat yuklanadi
+    const defaultProducts = [
+        { id: 1, name: "Premium Kovka Darvoza", price: "Kelishuv asosida", image: "./assets/Без названия.png" },
+        { id: 2, name: "Zamonaviy Panjara", price: "1 200 000 so'm / m²", image: "./assets/Без названия.png" },
+        { id: 3, name: "Sifatli Naves", price: "Kelishuv asosida", image: "./assets/Без названия.png" }
+    ];
+
+    // Agar admindan hali tovar qo'shilmagan bo'lsa, default tovarlarni o'rnatamiz
+    if (!localStorage.getItem('adminProducts')) {
+        localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
+    }
+
+    const container = document.getElementById('productContainer');
+    
+    // Tovalarni ekranga chiqarish funksiyasi
+    function renderProducts() {
+        if (!container) return;
+        
+        const products = JSON.parse(localStorage.getItem('adminProducts')) || [];
+        container.innerHTML = '';
+
+        if (products.length === 0) {
+            container.innerHTML = `<p style="color: #888; text-align: center; width: 100%; grid-column: 1/-1; font-size: 18px;">Hozircha mahsulotlar mavjud emas.</p>`;
+        } else {
+            products.forEach((product, index) => {
+                const cardHTML = `
+                    <div class="card1" style="animation-delay: ${index * 0.08}s;">
+                        <div class="card-img-wrapper">
+                            <img src="${product.image || './assets/Без названия.png'}" class="card-img" alt="${product.name}">
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title">${product.name}</h3>
+                            <p class="card-price">${product.price}</p>
+                            <a href="#" class="more-link">
+                                <span class="card-text">Ko'proq</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+    }
+
+    // Tovalarni darhol chizamiz
+    renderProducts();
+
+    // "Ko'proq" tugmasini tekshirish (Event Delegation)
+    if (container) {
+        container.addEventListener('click', (event) => {
+            const targetLink = event.target.closest('.more-link');
+            if (targetLink) {
+                event.preventDefault();
+                const isLogged = localStorage.getItem('isLoggedIn') === 'true';
+
+                if (!isLogged) {
+                    alert("Iltimos, avval ro'yxatdan o'ting yoki tizimga kiring!");
+                } else {
+                    console.log("Ruxsat berildi. Mahsulot tafsilotlari.");
+                }
+            }
+        });
+    }
+    // ------------------------------------------------------------
+
     const about = document.querySelector('.txt1');
     const phone = document.querySelector('.txt2');
     const jaloba = document.querySelector('.txt3');
@@ -97,27 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modeBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark');
         });
-    }
-
-    // 1. Kodni generatsiya qilish
-    function sendSmsCode() {
-        let otpCode = Math.floor(100000 + Math.random() * 900000);
-        localStorage.setItem('generatedCode', otpCode);
-        alert(`SMS: Sizning tasdiqlash kodingiz: ${otpCode}`);
-    }
-
-    // 2. Kiritilgan kodni tekshirish
-    function verifySmsCode() {
-        let enteredCode = document.getElementById('smsCodeInput').value;
-        let savedCode = localStorage.getItem('generatedCode');
-
-        if (enteredCode === savedCode) {
-            alert("Kod to'g'ri! Tizimga xush kelibsiz.");
-            localStorage.setItem('isLoggedIn', 'true');
-            updateUI();
-        } else {
-            alert("Xato kod kiritildi. Iltimos, qayta urinib ko'ring.");
-        }
     }
 
     // Ro'yxatdan o'tish (Sign Up) funksiyasi
