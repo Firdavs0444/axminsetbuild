@@ -598,7 +598,7 @@
     <div class="category-slider" id="categorySlider">
         <button class="cat-btn active" data-category="Barchasi">Barchasi</button>
         <button class="cat-btn" data-category="Qurilish">Qurilish</button>
-        <button class="cat-btn" data-category="Texnika">Texnika & Gadjetlar</button>
+<button class="cat-btn" data-category="Texnika & Gadjetlar">Texnika & Gadjetlar</button>
         <button class="cat-btn" data-category="Avto">Avto / Detaling</button>
         <button class="cat-btn" data-category="IT">IT va Dasturlash</button>
         <button class="cat-btn" data-category="Biznes">Biznes & Tender</button>
@@ -815,43 +815,62 @@
             });
         }
     </script>
-    <script>
-        // API manzilini aniq ko'rsatamiz (MockAPI'dagi to'g'ri URL)
-        const API_URL = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+   <script>
+    const API_URL = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+    let allProducts = []; // Barcha mahsulotlarni saqlash uchun
 
-        async function fetchProducts() {
-            const container = document.getElementById('productContainer');
-            try {
-                const response = await fetch(API_URL);
-                const products = await response.json();
-
-                container.innerHTML = ''; // Eski ma'lumotlarni tozalaymiz
-
-                products.forEach(product => {
-                    const card = `
-                        <div class="card1">
-                            <div class="card-img-wrapper">
-                                <img src="${product.image || 'default.jpg'}" alt="${product.name}" class="card-img">
-                            </div>
-                            <div class="card-info">
-                                <h3 class="card-title">${product.name}</h3>
-                                <p class="card-price">${product.price} UZS</p>
-                                <button class="card-text" onclick="alert('Kategoriya: ${product.category}\\nTavsif: ${product.description}')">Batafsil</button>
-                            </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', card);
-                });
-            } catch (error) {
-                console.error("Xatolik:", error);
-                container.innerHTML = `<p style="text-align:center; width:100%;">Mahsulotlarni yuklashda xatolik yuz berdi.</p>`;
-            }
+    async function fetchProducts() {
+        const container = document.getElementById('productContainer');
+        try {
+            const response = await fetch(API_URL);
+            allProducts = await response.json(); // Ma'lumotlarni o'zgaruvchiga saqlaymiz
+            renderProducts(allProducts); // Dastlab hammasini chiqaramiz
+        } catch (error) {
+            console.error("Xatolik:", error);
         }
+    }
 
-        // Sahifa yuklanganda ishga tushadi
-        document.addEventListener('DOMContentLoaded', fetchProducts);
-    </script>
+    // Mahsulotlarni ekranga chiqarish funksiyasi
+    function renderProducts(products) {
+        const container = document.getElementById('productContainer');
+        container.innerHTML = '';
+        products.forEach(product => {
+            const card = `
+                <div class="card1">
+                    <div class="card-img-wrapper">
+                        <img src="${product.image || 'default.jpg'}" alt="${product.name}" class="card-img">
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title">${product.name}</h3>
+                        <p class="card-price">${product.price} UZS</p>
+                        <button class="card-text">Batafsil</button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', card);
+        });
+    }
 
+    // Kategoriyalarni bosganda ishlash
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // 1. Aktiv klassni o'zgartirish
+            document.querySelector('.cat-btn.active').classList.remove('active');
+            btn.classList.add('active');
+
+            // 2. Filtrlash
+            const category = btn.getAttribute('data-category');
+            if (category === 'Barchasi') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.category === category);
+                renderProducts(filtered);
+            }
+        });
+    });
+
+    fetchProducts();
+</script>
     <script src="main.js"></script>
 </body>
 
