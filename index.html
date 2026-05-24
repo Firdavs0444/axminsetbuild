@@ -872,23 +872,26 @@
         fetchProducts();
     </script>
     <script>function renderProducts(products) {
-            const container = document.getElementById('productContainer');
-            container.innerHTML = ''; // Avvalgi ma'lumotni tozalash
+    const container = document.getElementById('productContainer');
+    container.innerHTML = ''; 
 
-            // Agar mahsulotlar ro'yxati bo'sh bo'lsa
-            if (products.length === 0) {
-                container.innerHTML = `
-            <div style="text-align: center; width: 100%; padding: 40px; color: var(--text-muted);">
-                <h3>Mahsulot topilmadi</h3>
-                <p>Hozircha bu kategoriyada tovar mavjud emas. Tez orada qo'shamiz!</p>
+    // 1. FAQAT 'Sotuvda' bo'lganlarni saralab olamiz
+    const availableProducts = products.filter(product => product.status === 'Sotuvda');
+
+    // 2. Agar saralangan ro'yxat bo'sh bo'lsa (yoki umuman mahsulot qolmasa)
+    if (availableProducts.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; width: 100%; padding: 40px; color: #888;">
+                <h3>Hozircha mahsulotlar mavjud emas</h3>
+                <p>Tez orada yangi mahsulotlar qo'shamiz!</p>
             </div>
         `;
-                return; // Funksiyani shu yerda to'xtatamiz
-            }
+        return;
+    }
 
-            // Agar mahsulotlar bo'lsa, ularni ko'rsatamiz
-            products.forEach(product => {
-                const card = `
+    // 3. Faqat sotuvdagi mahsulotlarni chiqaramiz
+    availableProducts.forEach(product => {
+        const card = `
             <div class="card1">
                 <div class="card-img-wrapper">
                     <img src="${product.image || 'default.jpg'}" alt="${product.name}" class="card-img">
@@ -900,9 +903,9 @@
                 </div>
             </div>
         `;
-                container.insertAdjacentHTML('beforeend', card);
-            });
-        }</script>
+        container.insertAdjacentHTML('beforeend', card);
+    });
+}</script>
 
     <script src="main.js"></script>
 </body>
