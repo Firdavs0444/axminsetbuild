@@ -460,6 +460,9 @@
     </main>
 
     <script>
+        // Mock API havolasi
+        const API_URL = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+
         function switchTab(element) {
             document.querySelectorAll('.menu-list a').forEach(a => a.classList.remove('active'));
             element.classList.add('active');
@@ -471,14 +474,15 @@
             document.getElementById(targetId).classList.add('active-section');
         }
 
-        // Foydalanuvchilarni yuklash
+        // 1. FOYDALANUVCHILARNI YUKLASH
         function loadUsers() {
             const tableBody = document.getElementById('userTableBody');
             const totalUsersElement = document.getElementById('totalUsers');
             const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
+            if(!tableBody) return;
             tableBody.innerHTML = '';
-            totalUsersElement.innerText = users.length;
+            if(totalUsersElement) totalUsersElement.innerText = users.length;
 
             if (users.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Foydalanuvchilar mavjud emas.</td></tr>`;
@@ -572,71 +576,92 @@
             }
         }
 
-        // Mahsulotlarni yuklash (Telefon raqami bilan)
-        function loadProducts() {
+        // 2. MAHSULOTLARNI MOCK API'DAN YUKLAB JADVALGA CHIQARISH (GET)
+        async function loadProducts() {
             const productTableBody = document.getElementById('productTableBody');
             const totalProductsElement = document.getElementById('totalProducts');
             
-            const defaultProducts = [
-                { id: '#101', name: "Premium Kovka Darvoza", category: "Qurilish", price: "Kelishuv asosida", phone: "+998 90 123 45 67", description: "Yuqori sifatli qalin metalldan tayyorlangan chidamli darvoza.", image: "https://picsum.photos/id/10/400/300", status: 'Sotuvda' },
-                { id: '#102', name: "iPhone 16 Pro Max", category: "Texnika & Gadjetlar", price: "1200$", phone: "+998 93 777 77 77", description: "Yangi avlod flagman smartfoni.", image: "https://picsum.photos/id/15/400/300", status: 'Sotuvda' }
-            ];
+            if (!productTableBody) return;
+            productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 20px;">Yuklanmoqda...</td></tr>`;
 
-            const products = JSON.parse(localStorage.getItem('adminProducts')) || defaultProducts;
+            try {
+                const response = await fetch(API_URL);
+                
+                // Agar server 404 yoki boshqa xato bersa
+                if (!response.ok) {
+                    throw new Error("Serverdan javob kelmadi (API URL'ni tekshiring)");
+                }
 
-            if (!localStorage.getItem('adminProducts')) {
-                localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
+                const products = await response.json();
+
+                // Agar ma'lumot array bo'lmasa, xavfsiz chiqish
+                if (!Array.isArray(products)) {
+                    throw new Error("Ma'lumotlar formati noto'g'ri");
+                }
+
+                if(totalProductsElement) totalProductsElement.innerText = products.length;
+                productTableBody.innerHTML = '';
+
+                if (products.length === 0) {
+                    productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 20px;">Mahsulotlar katalogi bo'sh.</td></tr>`;
+                    return;
+                }
+
+                products.forEach((product, index) => {
+                    let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
+                    let txtDesc = product.description || 'Tavsif yo\'q';
+                    let displayCategory = product.category || 'Qurilish';
+                    let displayPhone = product.phone || 'Kiritilmagan';
+                    let displayId = product.id;
+
+                    const row = `
+                        <tr>
+                            <td>#${displayId}</td>
+                            <td><img src="${product.image || ''}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
+                            <td>${product.name || 'Nomsiz'}</td>
+                            <td><span class="badge-category">${displayCategory}</span></td>
+                            <td>${product.price || '0'}</td>
+                            <td>${displayPhone}</td>
+                            <td>
+                                <span id="desc-${index}" class="desc-text">${txtDesc}</span>
+                                ${txtDesc.length > 20 ? `<button id="btn-more-${index}" class="btn-more" onclick="toggleDescription(${index})">Ko'proq...</button>` : ''}
+                            </td>
+                            <td><span class="${statusClass}">${product.status || 'Sotuvda'}</span></td>
+                            <td>
+                                <button class="btn-action" onclick="toggleProductStatus('${product.id}', '${product.status}')">Holat</button>
+                                <button class="btn-action" onclick="editProduct('${product.id}')">Tahrirlash</button>
+                                <button class="btn-action delete" onclick="deleteProduct('${product.id}')">O'chirish</button>
+                            </td>
+                        </tr>
+                    `;
+                    productTableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error("Xatolik:", error);
+                productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--danger); padding: 20px;">Xatolik yuz berdi. API manzilini va internetni tekshiring.</td></tr>`;
             }
-
-            if(totalProductsElement) totalProductsElement.innerText = products.length;
-            productTableBody.innerHTML = '';
-
-            if (products.length === 0) {
-                productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888;">Mahsulotlar katalogi bo'sh.</td></tr>`;
-                return;
-            }
-
-            products.forEach((product, index) => {
-                let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
-                let txtDesc = product.description || 'Tavsif yo\'q';
-                let displayCategory = product.category || 'Qurilish';
-                let displayPhone = product.phone || 'Kiritilmagan';
-
-                const row = `
-                    <tr>
-                        <td>${product.id || '#' + (index + 101)}</td>
-                        <td><img src="${product.image}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
-                        <td>${product.name}</td>
-                        <td><span class="badge-category">${displayCategory}</span></td>
-                        <td>${product.price}</td>
-                        <td>${displayPhone}</td>
-                        <td>
-                            <span id="desc-${index}" class="desc-text">${txtDesc}</span>
-                            ${txtDesc.length > 20 ? `<button id="btn-more-${index}" class="btn-more" onclick="toggleDescription(${index})">Ko'proq...</button>` : ''}
-                        </td>
-                        <td><span class="${statusClass}">${product.status || 'Sotuvda'}</span></td>
-                        <td>
-                            <button class="btn-action" onclick="toggleProductStatus(${index})">Holat</button>
-                            <button class="btn-action" onclick="editProduct(${index})">Tahrirlash</button>
-                            <button class="btn-action delete" onclick="deleteProduct(${index})">O'chirish</button>
-                        </td>
-                    </tr>
-                `;
-                productTableBody.insertAdjacentHTML('beforeend', row);
-            });
         }
 
-        function toggleProductStatus(index) {
-            let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-            if (products[index]) {
-                products[index].status = (products[index].status === 'Tugagan') ? 'Sotuvda' : 'Tugagan';
-                localStorage.setItem('adminProducts', JSON.stringify(products));
-                loadProducts();
+        // 3. MAHSULOT HOLATINI O'ZGARTIRISH (PUT)
+        async function toggleProductStatus(id, currentStatus) {
+            const nextStatus = (currentStatus === 'Tugagan') ? 'Sotuvda' : 'Tugagan';
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: nextStatus })
+                });
+
+                if (response.ok) {
+                    loadProducts(); 
+                }
+            } catch (error) {
+                console.error("Statusni o'zgartirishda xatolik:", error);
             }
         }
 
-        // Mahsulot qo'shish funksiyasi (Telefon raqamini saqlaydi)
-        function addProduct() {
+        // 4. YANGI MAHSULOT QO'SHISH (POST)
+        async function addProduct() {
             const name = document.getElementById('newProductName').value.trim();
             const category = document.getElementById('newProductCategory').value;
             const price = document.getElementById('newProductPrice').value.trim();
@@ -650,12 +675,8 @@
                 return;
             }
 
-            let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-            const uniqueId = '#' + Math.floor(100 + Math.random() * 900);
-
-            const appendProduct = (imgData) => {
-                products.push({
-                    id: uniqueId,
+            const sendToAPI = async (imgData) => {
+                const newProduct = {
                     name: name,
                     category: category,
                     price: price,
@@ -663,70 +684,99 @@
                     description: desc,
                     image: imgData,
                     status: 'Sotuvda'
-                });
-                saveAndResetProductForm(products);
+                };
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(newProduct)
+                    });
+
+                    if (response.ok) {
+                        document.getElementById('newProductName').value = '';
+                        document.getElementById('newProductPrice').value = '';
+                        document.getElementById('newProductPhone').value = '';
+                        document.getElementById('newProductDesc').value = '';
+                        document.getElementById('newProductImage').value = '';
+                        fileInput.value = '';
+                        
+                        loadProducts();
+                        alert("Mahsulot muvaffaqiyatli server katalogiga qo'shildi!");
+                    } else {
+                        alert("Xatolik: Serverga saqlab bo'lmadi.");
+                    }
+                } catch (error) {
+                    console.error("Xatolik:", error);
+                }
             };
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    appendProduct(e.target.result);
+                    sendToAPI(e.target.result);
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
                 const finalImage = imageUrlInput || 'https://picsum.photos/400/300';
-                appendProduct(finalImage);
+                sendToAPI(finalImage);
             }
         }
 
-        function saveAndResetProductForm(products) {
-            localStorage.setItem('adminProducts', JSON.stringify(products));
-            
-            document.getElementById('newProductName').value = '';
-            document.getElementById('newProductPrice').value = '';
-            document.getElementById('newProductPhone').value = '';
-            document.getElementById('newProductDesc').value = '';
-            document.getElementById('newProductImage').value = '';
-            document.getElementById('newProductFile').value = '';
-            
-            loadProducts();
-            alert("Mahsulot muvaffaqiyatli katalogga qo'shildi!");
-        }
-
-        function deleteProduct(index) {
+        // 5. MAHSULOTNI O'CHIRISH (DELETE)
+        async function deleteProduct(id) {
             if (confirm("Ushbu mahsulotni katalogdan butunlay o'chirmoqchimisiz?")) {
-                let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-                products.splice(index, 1);
-                localStorage.setItem('adminProducts', JSON.stringify(products));
-                loadProducts();
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: "DELETE"
+                    });
+
+                    if (response.ok) {
+                        alert("Mahsulot muvaffaqiyatli o'chirildi!");
+                        loadProducts();
+                    }
+                } catch (error) {
+                    console.error("O'chirishda xatolik:", error);
+                }
             }
         }
 
-        // Mahsulotni tahrirlash (Telefon raqami bilan)
-        function editProduct(index) {
-            let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-            let p = products[index];
+        // 6. MAHSULOTNI TAHRIRLASH (PUT)
+        async function editProduct(id) {
+            try {
+                const res = await fetch(`${API_URL}/${id}`);
+                const p = await res.json();
 
-            let newName = prompt("Yangi nom kiriting:", p.name);
-            let newCategory = prompt("Yangi kategoriya tanlang:", p.category || 'Qurilish');
-            let newPrice = prompt("Yangi narx kiriting:", p.price);
-            let newPhone = prompt("Yangi telefon raqam kiriting:", p.phone || '');
-            let newDesc = prompt("Yangi tavsif kiriting:", p.description || '');
-            let newImg = prompt("Yangi rasm URL manzilini kiriting (bo'sh qoldirilsa eski rasm saqlanadi):", p.image);
+                let newName = prompt("Yangi nom kiriting:", p.name);
+                let newCategory = prompt("Yangi kategoriya tanlang:", p.category);
+                let newPrice = prompt("Yangi narx kiriting:", p.price);
+                let newPhone = prompt("Yangi telefon raqam kiriting:", p.phone);
+                let newDesc = prompt("Yangi tavsif kiriting:", p.description);
+                let newImg = prompt("Yangi rasm URL manzilini kiriting (eski rasm uchun bo'sh qoldiring):", p.image);
 
-            if (newName && newPrice && newPhone && newDesc) {
-                products[index] = { 
-                    ...p, 
-                    name: newName, 
-                    category: newCategory || p.category, 
-                    price: newPrice, 
-                    phone: newPhone,
-                    description: newDesc, 
-                    image: newImg || p.image 
-                };
-                localStorage.setItem('adminProducts', JSON.stringify(products));
-                loadProducts();
-                alert("Mahsulot muvaffaqiyatli tahrirlandi!");
+                if (newName && newPrice && newPhone && newDesc) {
+                    const updatedProduct = {
+                        name: newName,
+                        category: newCategory || p.category,
+                        price: newPrice,
+                        phone: newPhone,
+                        description: newDesc,
+                        image: newImg || p.image
+                    };
+
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(updatedProduct)
+                    });
+
+                    if (response.ok) {
+                        alert("Mahsulot muvaffaqiyatli tahrirlandi!");
+                        loadProducts();
+                    }
+                }
+            } catch (error) {
+                console.error("Tahrirlashda xatolik:", error);
             }
         }
 
