@@ -53,9 +53,17 @@
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         header {
@@ -82,7 +90,9 @@
             align-items: center;
         }
 
-        .txt1, .txt2, .txt3 {
+        .txt1,
+        .txt2,
+        .txt3 {
             color: var(--text-muted);
             text-decoration: none;
             font-size: 13px;
@@ -95,7 +105,10 @@
         }
 
         @media (min-width: 851px) {
-            .txt1::after, .txt2::after, .txt3::after {
+
+            .txt1::after,
+            .txt2::after,
+            .txt3::after {
                 content: '';
                 position: absolute;
                 bottom: 0;
@@ -105,12 +118,19 @@
                 background-color: var(--success);
                 transition: width 0.25s ease;
             }
-            .txt1:hover::after, .txt2:hover::after, .txt3:hover::after {
+
+            .txt1:hover::after,
+            .txt2:hover::after,
+            .txt3:hover::after {
                 width: 100%;
             }
         }
 
-        .txt1:hover, .txt2:hover, .txt3:hover { color: var(--success); }
+        .txt1:hover,
+        .txt2:hover,
+        .txt3:hover {
+            color: var(--success);
+        }
 
         .social-links {
             display: flex;
@@ -118,7 +138,8 @@
             align-items: center;
         }
 
-        .link1, .link2 {
+        .link1,
+        .link2 {
             font-size: 13px;
             font-weight: 600;
             text-decoration: none;
@@ -126,8 +147,16 @@
             border-radius: 20px;
             transition: all 0.2s ease;
         }
-        .link1 { color: #e1306c; background-color: rgba(225, 48, 108, 0.08); }
-        .link2 { color: #0088cc; background-color: rgba(0, 136, 204, 0.08); }
+
+        .link1 {
+            color: #e1306c;
+            background-color: rgba(225, 48, 108, 0.08);
+        }
+
+        .link2 {
+            color: #0088cc;
+            background-color: rgba(0, 136, 204, 0.08);
+        }
 
         .header-right {
             display: flex;
@@ -135,7 +164,11 @@
             align-items: center;
         }
 
-        #darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn {
+        #darkBtn,
+        #signInBtn,
+        #signUpBtn,
+        #logOutBtn,
+        #adminBtn {
             padding: 10px 18px;
             border-radius: 10px;
             border: none;
@@ -145,21 +178,49 @@
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        #darkBtn { background-color: var(--border-color); color: var(--text-main); }
-        #signInBtn { background-color: var(--primary); color: white; }
-        #signUpBtn { background-color: var(--success); color: white; }
-        #logOutBtn { background-color: var(--danger); color: white; }
-        #adminBtn { background-color: var(--warning); color: white; }
+        #darkBtn {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        #signInBtn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        #signUpBtn {
+            background-color: var(--success);
+            color: white;
+        }
+
+        #logOutBtn {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        #adminBtn {
+            background-color: var(--warning);
+            color: white;
+        }
 
         @media (min-width: 851px) {
-            #darkBtn:hover, #signInBtn:hover, #signUpBtn:hover, #logOutBtn:hover, #adminBtn:hover {
+
+            #darkBtn:hover,
+            #signInBtn:hover,
+            #signUpBtn:hover,
+            #logOutBtn:hover,
+            #adminBtn:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
                 opacity: 0.95;
             }
         }
 
-        #darkBtn:active, #signInBtn:active, #signUpBtn:active, #logOutBtn:active, #adminBtn:active {
+        #darkBtn:active,
+        #signInBtn:active,
+        #signUpBtn:active,
+        #logOutBtn:active,
+        #adminBtn:active {
             transform: scale(0.95);
             opacity: 0.8;
         }
@@ -194,7 +255,8 @@
             flex-shrink: 0;
         }
 
-        .cat-btn.active, .cat-btn:hover {
+        .cat-btn.active,
+        .cat-btn:hover {
             background-color: var(--success);
             color: white;
             border-color: var(--success);
@@ -207,7 +269,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 35px;
-            padding: 30px 40px 50px 40px; 
+            padding: 30px 40px 50px 40px;
             margin: 0 auto;
         }
 
@@ -237,7 +299,7 @@
             height: 220px;
             overflow: hidden;
             position: relative;
-            background-color: rgba(0,0,0,0.02);
+            background-color: rgba(0, 0, 0, 0.02);
             cursor: zoom-in;
         }
 
@@ -249,7 +311,9 @@
         }
 
         @media (min-width: 851px) {
-            .card1:hover .card-img { transform: scale(1.06); }
+            .card1:hover .card-img {
+                transform: scale(1.06);
+            }
         }
 
         .card-info {
@@ -276,7 +340,11 @@
             text-align: center;
         }
 
-        .more-link { text-decoration: none; display: block; cursor: pointer; }
+        .more-link {
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
 
         .card-text {
             display: block;
@@ -292,7 +360,7 @@
             transition: all 0.2s ease;
         }
 
-        .more-link:active .card-text, 
+        .more-link:active .card-text,
         .card1:hover .card-text {
             background-color: var(--success);
             color: white;
@@ -306,7 +374,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.4); 
+            background-color: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: none;
@@ -343,29 +411,105 @@
             justify-content: center;
         }
 
-        .modal-card h2 { font-size: 24px; color: var(--text-main); margin-bottom: 8px; font-weight: 700; text-align: left; }
-        .modal-card p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; text-align: left; }
-
-        .form-group { margin-bottom: 16px; text-align: left; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        .form-group input {
-            width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px;
-            outline: none; font-size: 15px; background: var(--bg-main); color: var(--text-main); transition: 0.2s;
+        .modal-card h2 {
+            font-size: 24px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-align: left;
         }
-        .form-group input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
 
-        .modal-submit-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; color: white; }
+        .modal-card p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+            background: var(--bg-main);
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            color: white;
+        }
 
         /* Lightbox stillari */
         #imageLightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center; z-index: 10000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
         }
-        #lightboxImg { max-width: 90%; max-height: 80%; border-radius: 10px; }
-        .lightbox-close { position: absolute; top: 30px; right: 40px; color: white; font-size: 40px; cursor: pointer; }
 
-        @keyframes cardAppear { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        #lightboxImg {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        @keyframes cardAppear {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
 
         @media (max-width: 850px) {
             header {
@@ -375,13 +519,51 @@
                 padding: 20px;
                 gap: 15px;
             }
-            .category-slider { margin-top: 15px; padding: 0 15px; }
-            .nav-links { width: 100%; justify-content: center; gap: 20px; }
-            .social-links { justify-content: center; width: 100%; margin: 5px 0; }
-            .header-right { width: 100%; justify-content: center; flex-wrap: wrap; gap: 8px; }
-            #darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn { padding: 8px 14px; font-size: 12px; flex-grow: 1; text-align: center; }
-            main { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 25px 15px; }
-            .card-img-wrapper { height: 180px; }
+
+            .category-slider {
+                margin-top: 15px;
+                padding: 0 15px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .social-links {
+                justify-content: center;
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            #darkBtn,
+            #signInBtn,
+            #signUpBtn,
+            #logOutBtn,
+            #adminBtn {
+                padding: 8px 14px;
+                font-size: 12px;
+                flex-grow: 1;
+                text-align: center;
+            }
+
+            main {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 20px;
+                padding: 25px 15px;
+            }
+
+            .card-img-wrapper {
+                height: 180px;
+            }
         }
     </style>
 </head>
@@ -392,13 +574,13 @@
         <div class="logo-section">
             <strong style="font-size: 15px; font-weight: 800; letter-spacing: 0.5px;">AXMINSTER PORTAL</strong>
         </div>
-        
+
         <div class="nav-links">
             <a class="txt1" id="aboutBtn">BIZ HAQQIMIZDA</a>
             <a class="txt2" id="contactBtn">BIZ BILAN BOG'LANISH</a>
             <a class="txt3" id="complainBtn">SHIKOYAT</a>
         </div>
-        
+
         <div class="social-links">
             <a href="#" class="link1">Instagram</a>
             <a href="#" class="link2">Telegram</a>
@@ -432,11 +614,13 @@
             <p class="subtitle" id="detailsCategory">Kategoriya</p>
             <div style="margin-bottom: 20px; text-align: left;">
                 <strong style="font-size: 14px; color: var(--text-muted);">Batafsil tavsif:</strong>
-                <p id="detailsDesc" style="margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--text-main);"></p>
+                <p id="detailsDesc"
+                    style="margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--text-main);"></p>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                 <span id="detailsPrice" style="font-size: 18px; font-weight: 800; color: var(--warning);">0 UZS</span>
-                <button class="modal-submit-btn" style="background: var(--success); margin: 0; width: auto; padding: 10px 20px;">Bog'lanish</button>
+                <button class="modal-submit-btn"
+                    style="background: var(--success); margin: 0; width: auto; padding: 10px 20px;">Bog'lanish</button>
             </div>
         </div>
     </div>
@@ -447,9 +631,12 @@
             <h2>Biz haqqimizda</h2>
             <p class="subtitle">Axminster Premium Portal tizimi</p>
             <div style="font-size: 15px; line-height: 1.6; color: var(--text-main); text-align: left;">
-                <p><strong>Axminster Portal</strong> — qurilish loyihalari, zamonaviy texnikalar, avto-detaling, IT-xizmatlar hamda biznes va tender sohasidagi eng dolzarb takliflarni jamlagan universal platformadir.</p>
+                <p><strong>Axminster Portal</strong> — qurilish loyihalari, zamonaviy texnikalar, avto-detaling,
+                    IT-xizmatlar hamda biznes va tender sohasidagi eng dolzarb takliflarni jamlagan universal
+                    platformadir.</p>
                 <br>
-                <p>Bizning maqsadimiz — mijozlarimizga eng sifatli va premium darajadagi xizmat hamda mahsulotlar katalogini taqdim etishdir.</p>
+                <p>Bizning maqsadimiz — mijozlarimizga eng sifatli va premium darajadagi xizmat hamda mahsulotlar
+                    katalogini taqdim etishdir.</p>
             </div>
         </div>
     </div>
@@ -459,7 +646,8 @@
             <button class="modal-close">&times;</button>
             <h2>Biz bilan bog'lanish</h2>
             <p class="subtitle">Savollar yoki takliflar bormi? Bizga bog'laning!</p>
-            <div style="font-size: 15px; line-height: 1.8; color: var(--text-main); text-align: left; display: flex; flex-direction: column; gap: 10px;">
+            <div
+                style="font-size: 15px; line-height: 1.8; color: var(--text-main); text-align: left; display: flex; flex-direction: column; gap: 10px;">
                 <p><strong>📍 Manzil:</strong> Toshkent shahri, O'zbekiston</p>
                 <p><strong>📞 Telefon:</strong> +998 (93) 280-56-53</p>
                 <p><strong>📧 Email:</strong> toxirovf07@gmail.com</p>
@@ -482,7 +670,8 @@
                     <label>Murojaat matni</label>
                     <input type="text" required placeholder="Shikoyat yoki taklifingizni batafsil yozing...">
                 </div>
-                <button type="submit" class="modal-submit-btn" style="background: var(--danger);" id="complainSubmitBtn">Yuborish</button>
+                <button type="submit" class="modal-submit-btn" style="background: var(--danger);"
+                    id="complainSubmitBtn">Yuborish</button>
             </form>
         </div>
     </div>
@@ -524,7 +713,8 @@
                     <label>Parol kiriting</label>
                     <input type="password" id="regPassword" required placeholder="Kamida 6 ta belgi">
                 </div>
-                <button type="submit" class="modal-submit-btn" style="background: var(--success);">Ro'yxatdan o'tish</button>
+                <button type="submit" class="modal-submit-btn" style="background: var(--success);">Ro'yxatdan
+                    o'tish</button>
             </form>
         </div>
     </div>
@@ -545,9 +735,9 @@
         const complainModal = document.getElementById('complainModal');
 
         // Ochish funksiyalari
-        if(aboutBtn) aboutBtn.addEventListener('click', () => aboutModal.style.display = 'flex');
-        if(contactBtn) contactBtn.addEventListener('click', () => contactModal.style.display = 'flex');
-        if(complainBtn) complainBtn.addEventListener('click', () => complainModal.style.display = 'flex');
+        if (aboutBtn) aboutBtn.addEventListener('click', () => aboutModal.style.display = 'flex');
+        if (contactBtn) contactBtn.addEventListener('click', () => contactModal.style.display = 'flex');
+        if (complainBtn) complainBtn.addEventListener('click', () => complainModal.style.display = 'flex');
 
         // Tizimdagi BARCHA modal yopish tugmalari (X) uchun umumiy hodisa
         document.querySelectorAll('.modal-close').forEach(button => {
@@ -570,25 +760,25 @@
         const complainForm = document.getElementById('complainForm');
         const complainSubmitBtn = document.getElementById('complainSubmitBtn');
 
-        if(complainForm) {
+        if (complainForm) {
             complainForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                
+
                 // Tugmani vaqtincha bloklash (Double click oldini olish uchun)
-                if(complainSubmitBtn) {
+                if (complainSubmitBtn) {
                     complainSubmitBtn.disabled = true;
                     complainSubmitBtn.innerText = "Yuborilmoqda...";
                 }
-                
+
                 // Inputlardan qiymatlarni olish
                 const userContact = complainForm.querySelectorAll('input')[0].value;
                 const messageText = complainForm.querySelectorAll('input')[1].value;
-                
+
                 // Telegramga boradigan xabar formati
                 const fullMessage = `⚠️ <b>YANGI MUROJAAT</b> ⚠️\n\n` +
-                                    `👤 <b>Kimdan:</b> ${userContact}\n` +
-                                    `📝 <b>Matn:</b> ${messageText}\n\n` +
-                                    `📅 <i>Sana: ${new Date().toLocaleString()}</i>`;
+                    `👤 <b>Kimdan:</b> ${userContact}\n` +
+                    `📝 <b>Matn:</b> ${messageText}\n\n` +
+                    `📅 <i>Sana: ${new Date().toLocaleString()}</i>`;
 
                 // Telegram API-ga so'rov yuborish
                 fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -602,29 +792,67 @@
                         parse_mode: 'HTML'
                     })
                 })
-                .then(response => {
-                    if(response.ok) {
-                        alert("Murojaatingiz botga muvaffaqiyatli yuborildi!");
-                        complainModal.style.display = 'none';
-                        complainForm.reset();
-                    } else {
-                        alert("Xatolik yuz berdi. Bot token yoki Chat ID ni tekshiring.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Xatolik:', error);
-                    alert("Internet aloqasini tekshiring.");
-                })
-                .finally(() => {
-                    // Tugmani asl holatiga qaytarish
-                    if(complainSubmitBtn) {
-                        complainSubmitBtn.disabled = false;
-                        complainSubmitBtn.innerText = "Yuborish";
-                    }
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Murojaatingiz botga muvaffaqiyatli yuborildi!");
+                            complainModal.style.display = 'none';
+                            complainForm.reset();
+                        } else {
+                            alert("Xatolik yuz berdi. Bot token yoki Chat ID ni tekshiring.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Xatolik:', error);
+                        alert("Internet aloqasini tekshiring.");
+                    })
+                    .finally(() => {
+                        // Tugmani asl holatiga qaytarish
+                        if (complainSubmitBtn) {
+                            complainSubmitBtn.disabled = false;
+                            complainSubmitBtn.innerText = "Yuborish";
+                        }
+                    });
             });
         }
     </script>
+    <script>
+        // API manzilini aniq ko'rsatamiz (MockAPI'dagi to'g'ri URL)
+        const API_URL = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+
+        async function fetchProducts() {
+            const container = document.getElementById('productContainer');
+            try {
+                const response = await fetch(API_URL);
+                const products = await response.json();
+
+                container.innerHTML = ''; // Eski ma'lumotlarni tozalaymiz
+
+                products.forEach(product => {
+                    const card = `
+                        <div class="card1">
+                            <div class="card-img-wrapper">
+                                <img src="${product.image || 'default.jpg'}" alt="${product.name}" class="card-img">
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">${product.name}</h3>
+                                <p class="card-price">${product.price} UZS</p>
+                                <button class="card-text" onclick="alert('Kategoriya: ${product.category}\\nTavsif: ${product.description}')">Batafsil</button>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', card);
+                });
+            } catch (error) {
+                console.error("Xatolik:", error);
+                container.innerHTML = `<p style="text-align:center; width:100%;">Mahsulotlarni yuklashda xatolik yuz berdi.</p>`;
+            }
+        }
+
+        // Sahifa yuklanganda ishga tushadi
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+
     <script src="main.js"></script>
 </body>
+
 </html>
