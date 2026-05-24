@@ -1,89 +1,630 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asosiy Sahifa</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>Axminster - Premium Katalog</title>
+    <style>
+        /* Premium CSS stillari */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-main: #f8fafc;
+            --bg-header: rgba(255, 255, 255, 0.85);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body.dark {
+            --bg-main: #0f172a;
+            --bg-header: rgba(15, 23, 42, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #f8fafc, #f1f5f9, #eff6ff, #f8fafc);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+            color: var(--text-main);
+            transition: color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        body.dark {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #111827);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            width: 100%;
+            height: 75px;
+            background-color: var(--bg-header);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .txt1, .txt2, .txt3 {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: color 0.2s ease;
+            position: relative;
+            padding: 4px 0;
+            cursor: pointer;
+        }
+
+        @media (min-width: 851px) {
+            .txt1::after, .txt2::after, .txt3::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background-color: var(--success);
+                transition: width 0.25s ease;
+            }
+            .txt1:hover::after, .txt2:hover::after, .txt3:hover::after {
+                width: 100%;
+            }
+        }
+
+        .txt1:hover, .txt2:hover, .txt3:hover { color: var(--success); }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .link1, .link2 {
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+        .link1 { color: #e1306c; background-color: rgba(225, 48, 108, 0.08); }
+        .link2 { color: #0088cc; background-color: rgba(0, 136, 204, 0.08); }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #darkBtn { background-color: var(--border-color); color: var(--text-main); }
+        #signInBtn { background-color: var(--primary); color: white; }
+        #signUpBtn { background-color: var(--success); color: white; }
+        #logOutBtn { background-color: var(--danger); color: white; }
+        #adminBtn { background-color: var(--warning); color: white; }
+
+        @media (min-width: 851px) {
+            #darkBtn:hover, #signInBtn:hover, #signUpBtn:hover, #logOutBtn:hover, #adminBtn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                opacity: 0.95;
+            }
+        }
+
+        #darkBtn:active, #signInBtn:active, #signUpBtn:active, #logOutBtn:active, #adminBtn:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        .category-slider {
+            width: 100%;
+            max-width: 1440px;
+            margin: 95px auto 0 auto;
+            padding: 0 40px;
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-btn {
+            padding: 10px 22px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .cat-btn.active, .cat-btn:hover {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        main {
+            width: 100%;
+            max-width: 1440px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 35px;
+            padding: 30px 40px 50px 40px; 
+            margin: 0 auto;
+        }
+
+        .card1 {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: cardAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @media (min-width: 851px) {
+            .card1:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+                border-color: rgba(16, 185, 129, 0.3);
+            }
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+            background-color: rgba(0,0,0,0.02);
+            cursor: zoom-in;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 851px) {
+            .card1:hover .card-img { transform: scale(1.06); }
+        }
+
+        .card-info {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-price {
+            color: var(--warning);
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .more-link { text-decoration: none; display: block; cursor: pointer; }
+
+        .card-text {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            background-color: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--success);
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .more-link:active .card-text, 
+        .card1:hover .card-text {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.4); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-card {
+            background-color: var(--card-bg);
+            padding: 35px;
+            width: 90%;
+            max-width: 420px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--border-color);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-card h2 { font-size: 24px; color: var(--text-main); margin-bottom: 8px; font-weight: 700; text-align: left; }
+        .modal-card p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; text-align: left; }
+
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px;
+            outline: none; font-size: 15px; background: var(--bg-main); color: var(--text-main); transition: 0.2s;
+        }
+        .form-group input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+        .modal-submit-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; color: white; }
+
+        /* Lightbox stillari */
+        #imageLightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 10000;
+        }
+        #lightboxImg { max-width: 90%; max-height: 80%; border-radius: 10px; }
+        .lightbox-close { position: absolute; top: 30px; right: 40px; color: white; font-size: 40px; cursor: pointer; }
+
+        @keyframes cardAppear { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 850px) {
+            header {
+                position: relative;
+                flex-direction: column;
+                height: auto;
+                padding: 20px;
+                gap: 15px;
+            }
+            .category-slider { margin-top: 15px; padding: 0 15px; }
+            .nav-links { width: 100%; justify-content: center; gap: 20px; }
+            .social-links { justify-content: center; width: 100%; margin: 5px 0; }
+            .header-right { width: 100%; justify-content: center; flex-wrap: wrap; gap: 8px; }
+            #darkBtn, #signInBtn, #signUpBtn, #logOutBtn, #adminBtn { padding: 8px 14px; font-size: 12px; flex-grow: 1; text-align: center; }
+            main { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 25px 15px; }
+            .card-img-wrapper { height: 180px; }
+        }
+    </style>
 </head>
+
 <body>
+
     <header>
-        <img class="img1" src="./assets/Без названия.png" alt="Logo">
-        <nav class="nav-links">
-            <a class="txt1" href="#">BIZ HAQQIMIZDA</a>
-            <a class="txt2" href="#">BIZ BILAN BOG'LANISH</a>
-            <a class="txt3" href="#">SHIKOYAT</a>
-        </nav>
+        <div class="logo-section">
+            <strong style="font-size: 15px; font-weight: 800; letter-spacing: 0.5px;">AXMINSTER PORTAL</strong>
+        </div>
+        
+        <div class="nav-links">
+            <a class="txt1" id="aboutBtn">BIZ HAQQIMIZDA</a>
+            <a class="txt2" id="contactBtn">BIZ BILAN BOG'LANISH</a>
+            <a class="txt3" id="complainBtn">SHIKOYAT</a>
+        </div>
         
         <div class="social-links">
-            <a class="link1" href="https://www.instagram.com/_botir_kovka.uz?igsh=MXdlOTBoM2MzdnJjYQ%3D%3D">Instagram</a>
-            <a class="link2" href="https://t.me/tkhrvf">Telegram</a>
+            <a href="#" class="link1">Instagram</a>
+            <a href="#" class="link2">Telegram</a>
         </div>
 
         <div class="header-right">
-            <button id="darkBtn">Fon almashtirish</button>
+            <button id="darkBtn">Fon</button>
             <button id="signInBtn">Sign in</button>
             <button id="signUpBtn">Sign up</button>
-            <button id="logOutBtn" style="display: none;">Log out</button>
-            <button id="adminBtn" onclick="window.location.href='admin-login.html'">Admin panel</button>
+            <button id="logOutBtn" style="display: none;">Log Out</button>
+            <button id="adminBtn" onclick="window.location.href='admin.html'">Admin panel</button>
         </div>
     </header>
 
-    <div class="category-slider">
-        <button class="cat-btn active">Barchasi</button>
-        <button class="cat-btn">Smartfon</button>
-        <button class="cat-btn">Noutbuk</button>
-        <button class="cat-btn">Uyali anjom</button>
-        <button class="cat-btn">Texnikalar</button>
+    <div class="category-slider" id="categorySlider">
+        <button class="cat-btn active" data-category="Barchasi">Barchasi</button>
+        <button class="cat-btn" data-category="Qurilish">Qurilish</button>
+        <button class="cat-btn" data-category="Texnika">Texnika & Gadjetlar</button>
+        <button class="cat-btn" data-category="Avto">Avto / Detaling</button>
+        <button class="cat-btn" data-category="IT">IT va Dasturlash</button>
+        <button class="cat-btn" data-category="Biznes">Biznes & Tender</button>
+        <button class="cat-btn" data-category="Talim">Ta'lim & Kurslar</button>
     </div>
 
-    <main id="productContainer">
-        </main>
+    <main id="productContainer"></main>
 
-    <div id="signInModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Kirish (Sign In)</h2>
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-card">
+            <button class="modal-close" id="closeDetailsBtn">&times;</button>
+            <h2 id="detailsTitle">Mahsulot nomi</h2>
+            <p class="subtitle" id="detailsCategory">Kategoriya</p>
+            <div style="margin-bottom: 20px; text-align: left;">
+                <strong style="font-size: 14px; color: var(--text-muted);">Batafsil tavsif:</strong>
+                <p id="detailsDesc" style="margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--text-main);"></p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <span id="detailsPrice" style="font-size: 18px; font-weight: 800; color: var(--warning);">0 UZS</span>
+                <button class="modal-submit-btn" style="background: var(--success); margin: 0; width: auto; padding: 10px 20px;">Bog'lanish</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-card">
+            <button class="modal-close">&times;</button>
+            <h2>Biz haqqimizda</h2>
+            <p class="subtitle">Axminster Premium Portal tizimi</p>
+            <div style="font-size: 15px; line-height: 1.6; color: var(--text-main); text-align: left;">
+                <p><strong>Axminster Portal</strong> — qurilish loyihalari, zamonaviy texnikalar, avto-detaling, IT-xizmatlar hamda biznes va tender sohasidagi eng dolzarb takliflarni jamlagan universal platformadir.</p>
+                <br>
+                <p>Bizning maqsadimiz — mijozlarimizga eng sifatli va premium darajadagi xizmat hamda mahsulotlar katalogini taqdim etishdir.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-card">
+            <button class="modal-close">&times;</button>
+            <h2>Biz bilan bog'lanish</h2>
+            <p class="subtitle">Savollar yoki takliflar bormi? Bizga bog'laning!</p>
+            <div style="font-size: 15px; line-height: 1.8; color: var(--text-main); text-align: left; display: flex; flex-direction: column; gap: 10px;">
+                <p><strong>📍 Manzil:</strong> Toshkent shahri, O'zbekiston</p>
+                <p><strong>📞 Telefon:</strong> +998 (93) 280-56-53</p>
+                <p><strong>📧 Email:</strong> toxirovf07@gmail.com</p>
+                <p><strong>🤖 Telegram:</strong> @Toxirov_dev</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="complainModal">
+        <div class="modal-card">
+            <button class="modal-close">&times;</button>
+            <h2>Shikoyat va takliflar</h2>
+            <p class="subtitle">Platforma sifatini yaxshilashga yordam bering</p>
+            <form id="complainForm">
+                <div class="form-group">
+                    <label>Ismingiz yoki Telefon raqamingiz</label>
+                    <input type="text" required placeholder="Siz bilan bog'lanishimiz uchun...">
+                </div>
+                <div class="form-group">
+                    <label>Murojaat matni</label>
+                    <input type="text" required placeholder="Shikoyat yoki taklifingizni batafsil yozing...">
+                </div>
+                <button type="submit" class="modal-submit-btn" style="background: var(--danger);" id="complainSubmitBtn">Yuborish</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="signInModal">
+        <div class="modal-card">
+            <button class="modal-close">&times;</button>
+            <h2>Xush kelibsiz</h2>
+            <p class="subtitle">Tizimga kirish uchun ma'lumotlarni kiriting</p>
             <form id="signInForm">
-                <label for="loginEmail">Gmail yoki Telefon raqam:</label>
-                <input type="text" id="loginEmail" required placeholder="example@gmail.com yoki +998901234567">
-                
-                <label for="loginPassword">Parol:</label>
-                <input type="password" id="loginPassword" required placeholder="••••••••">
-                
-                <button type="submit">Kirish</button>
+                <div class="form-group">
+                    <label>Login yoki Telefon</label>
+                    <input type="text" required placeholder="example yoki +998...">
+                </div>
+                <div class="form-group">
+                    <label>Parol</label>
+                    <input type="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="modal-submit-btn" style="background: var(--primary);">Kirish</button>
             </form>
         </div>
     </div>
 
-    <div id="signUpModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Ro'yxatdan o'tish (Sign Up)</h2>
+    <div class="modal-overlay" id="signUpModal">
+        <div class="modal-card">
+            <button class="modal-close">&times;</button>
+            <h2>Ro'yxatdan o'tish</h2>
+            <p class="subtitle">Yangi profil yaratish mutlaqo bepul</p>
             <form id="signUpForm">
-                <label for="regEmail">Gmail:</label>
-                <input type="email" id="regEmail" required placeholder="example@gmail.com">
-                
-                <label for="regPhone">Telefon raqam:</label>
-                <input type="tel" id="regPhone" required placeholder="+998901234567">
-                
-                <label for="regPassword">Parol:</label>
-                <input type="password" id="regPassword" required placeholder="••••••••">
-                
-                <button type="submit">Ro'yxatdan o'tish</button>
+                <div class="form-group">
+                    <label>Foydalanuvchi nomi/Email</label>
+                    <input type="email" id="regEmail" required placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqam</label>
+                    <input type="tel" id="regPhone" required placeholder="+998">
+                </div>
+                <div class="form-group">
+                    <label>Parol kiriting</label>
+                    <input type="password" id="regPassword" required placeholder="Kamida 6 ta belgi">
+                </div>
+                <button type="submit" class="modal-submit-btn" style="background: var(--success);">Ro'yxatdan o'tish</button>
             </form>
         </div>
     </div>
 
-    <div id="imageLightbox" class="lightbox">
+    <div id="imageLightbox">
         <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightboxImg" src="" alt="Kattalashtirilgan rasm">
+        <img id="lightboxImg" src="" alt="Kattalashtirilgan rasm">
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Navigatsiya tugmalari va tegishli modallarni bog'lash
+        const aboutBtn = document.getElementById('aboutBtn');
+        const contactBtn = document.getElementById('contactBtn');
+        const complainBtn = document.getElementById('complainBtn');
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="./main.js"></script>
+        const aboutModal = document.getElementById('aboutModal');
+        const contactModal = document.getElementById('contactModal');
+        const complainModal = document.getElementById('complainModal');
+
+        // Ochish funksiyalari
+        if(aboutBtn) aboutBtn.addEventListener('click', () => aboutModal.style.display = 'flex');
+        if(contactBtn) contactBtn.addEventListener('click', () => contactModal.style.display = 'flex');
+        if(complainBtn) complainBtn.addEventListener('click', () => complainModal.style.display = 'flex');
+
+        // Tizimdagi BARCHA modal yopish tugmalari (X) uchun umumiy hodisa
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.target.closest('.modal-overlay').style.display = 'none';
+            });
+        });
+
+        // Modal oynalardan tashqariga (kulrang fonga) bosilganda oynani yopish
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // --- TELEGRAM BOT INTEGRATSIYASI ---
+        const TELEGRAM_BOT_TOKEN = '8968646328:AAH183smhnrPN8kY0govwUzJ4O5cxaE5ofw';
+        const TELEGRAM_CHAT_ID = '7714558401';
+
+        const complainForm = document.getElementById('complainForm');
+        const complainSubmitBtn = document.getElementById('complainSubmitBtn');
+
+        if(complainForm) {
+            complainForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Tugmani vaqtincha bloklash (Double click oldini olish uchun)
+                if(complainSubmitBtn) {
+                    complainSubmitBtn.disabled = true;
+                    complainSubmitBtn.innerText = "Yuborilmoqda...";
+                }
+                
+                // Inputlardan qiymatlarni olish
+                const userContact = complainForm.querySelectorAll('input')[0].value;
+                const messageText = complainForm.querySelectorAll('input')[1].value;
+                
+                // Telegramga boradigan xabar formati
+                const fullMessage = `⚠️ <b>YANGI MUROJAAT</b> ⚠️\n\n` +
+                                    `👤 <b>Kimdan:</b> ${userContact}\n` +
+                                    `📝 <b>Matn:</b> ${messageText}\n\n` +
+                                    `📅 <i>Sana: ${new Date().toLocaleString()}</i>`;
+
+                // Telegram API-ga so'rov yuborish
+                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: fullMessage,
+                        parse_mode: 'HTML'
+                    })
+                })
+                .then(response => {
+                    if(response.ok) {
+                        alert("Murojaatingiz botga muvaffaqiyatli yuborildi!");
+                        complainModal.style.display = 'none';
+                        complainForm.reset();
+                    } else {
+                        alert("Xatolik yuz berdi. Bot token yoki Chat ID ni tekshiring.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Xatolik:', error);
+                    alert("Internet aloqasini tekshiring.");
+                })
+                .finally(() => {
+                    // Tugmani asl holatiga qaytarish
+                    if(complainSubmitBtn) {
+                        complainSubmitBtn.disabled = false;
+                        complainSubmitBtn.innerText = "Yuborish";
+                    }
+                });
+            });
+        }
+    </script>
+    <script src="main.js"></script>
 </body>
 </html>

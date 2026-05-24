@@ -62,6 +62,7 @@
             padding: 10px 12px;
             border-radius: 6px;
             transition: 0.3s;
+            cursor: pointer;
         }
 
         .menu-list a:hover,
@@ -74,7 +75,7 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            min-width: 0; /* Flexbox ichida element qisqarishi uchun */
+            min-width: 0;
         }
 
         .header {
@@ -121,7 +122,13 @@
             padding-bottom: 10px;
         }
 
-        /* Jadvallar sig'may qolganda skroll bo'lishi uchun responsive o'rar qatlam */
+        .admin-section {
+            display: none;
+        }
+        .admin-section.active-section {
+            display: block;
+        }
+
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -135,7 +142,7 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px; /* Kichik ekranda jadvallar siqilib ketmasligi uchun minimal kenglik */
+            min-width: 950px;
         }
 
         .data-table th,
@@ -157,6 +164,30 @@
 
         .data-table tr:last-child {
             border-bottom: none;
+        }
+
+        .desc-text {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .desc-text.expanded {
+            white-space: normal;
+            max-width: none;
+        }
+
+        .btn-more {
+            background: none;
+            border: none;
+            color: var(--accent-green);
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+            text-decoration: underline;
         }
 
         .badge-active {
@@ -207,7 +238,7 @@
             padding: 24px;
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            max-width: 100%; /* Mobil ekranlarga moslashishi uchun */
+            max-width: 100%;
             width: 500px;
             margin-top: 20px;
         }
@@ -220,6 +251,7 @@
         }
 
         .form-group input,
+        .form-group textarea,
         .form-group select {
             width: 100%;
             padding: 12px;
@@ -229,11 +261,7 @@
             border-radius: 6px;
             margin-bottom: 15px;
             outline: none;
-        }
-        
-        .form-group select option {
-            background-color: #1a1a1a;
-            color: #fff;
+            resize: vertical;
         }
 
         .btn-submit {
@@ -245,12 +273,12 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            width: 100%; /* Mobilda bosish oson bo'lishi uchun */
+            width: 100%;
         }
 
         @media (min-width: 480px) {
             .btn-submit {
-                width: auto; /* Katta ekranlarda asl holatiga qaytadi */
+                width: auto;
             }
         }
 
@@ -266,10 +294,9 @@
             text-decoration: underline;
         }
 
-        /* 📌 MAXSUS RESPONSIVE CHEKLOVLAR (MEDIA QUERIES) */
         @media (max-width: 992px) {
             body {
-                flex-direction: column; /* Sidebar tepaga chiqadi */
+                flex-direction: column;
             }
 
             .sidebar {
@@ -299,30 +326,8 @@
                 padding: 20px;
             }
         }
-
-        @media (max-width: 576px) {
-            .header h1 {
-                font-size: 26px;
-            }
-            
-            .menu-list {
-                justify-content: space-around;
-            }
-            
-            .menu-list a {
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-
-            .form-group {
-                width: 100%;
-                padding: 15px;
-            }
-        }
     </style>
-    
     <script>
-        // Kirishni himoyalash
         if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
             window.location.href = 'admin-login.html';
         }
@@ -330,13 +335,12 @@
 </head>
 
 <body>
-
     <aside class="sidebar">
         <h2>Admin Hub</h2>
         <ul class="menu-list">
-            <li><a href="#" class="active">Dashboard</a></li>
-            <li><a href="#">Foydalanuvchilar</a></li>
-            <li><a href="#">Mahsulotlar</a></li>
+            <li><a data-target="dashboard-sec" class="active" onclick="switchTab(this)">Dashboard</a></li>
+            <li><a data-target="users-sec" onclick="switchTab(this)">Foydalanuvchilar</a></li>
+            <li><a data-target="products-sec" onclick="switchTab(this)">Mahsulotlar Katalogi</a></li>
         </ul>
     </aside>
 
@@ -348,7 +352,7 @@
 
         <div class="header">
             <h1>Boshqaruv <span style="color: var(--accent-green);">Markazi</span></h1>
-            <p style="color: #666;">Foydalanuvchilarni nazorat qilish va sozlash paneli.</p>
+            <p style="color: #666;">Foydalanuvchilarni nazorat qilish va mahsulotlar katalogini sozlash paneli.</p>
         </div>
 
         <div class="metrics">
@@ -357,83 +361,117 @@
                 <div class="card-value" id="totalUsers">0</div>
             </div>
             <div class="card">
-                <div class="card-title">Jami mahsulotlar</div>
+                <div class="card-title">Katalogdagi mahsulotlar</div>
                 <div class="card-value" id="totalProducts">0</div>
             </div>
             <div class="card">
                 <div class="card-title">Umumiy daromad</div>
-                <div class="card-value">0</div>
+                <div class="card-value" id="totalRevenue">0 so'm</div>
             </div>
         </div>
 
-        <h2 class="section-title">Foydalanuvchilarni boshqarish</h2>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Email / Telefon</th>
-                        <th>Status</th>
-                        <th>Sana</th>
-                        <th>Amallar</th>
-                    </tr>
-                </thead>
-                <tbody id="userTableBody">
-                </tbody>
-            </table>
+        <div id="dashboard-sec" class="admin-section active-section">
+            <h2 class="section-title">Umumiy statistika va xulosa</h2>
+            <p style="color: #aaa; line-height: 1.6;">Xush kelibsiz! Chap tomondagi menyu orqali foydalanuvchilar ro'yxatini boshqarishingiz yoki xizmatlar/mahsulotlar katalogiga o'zgartirish kiritishingiz mumkin.</p>
         </div>
 
-        <div class="form-group">
-            <label for="newUserInput">Email yoki Telefon raqam:</label>
-            <input type="text" id="newUserInput" placeholder="+998 90 123 45 67 yoki email">
-            
-            <label for="newUserPassword">Yangi foydalanuvchi uchun parol:</label>
-            <input type="password" id="newUserPassword" placeholder="Parolni kiriting">
-            
-            <button class="btn-submit" onclick="addUser()">Qo'shish</button>
+        <div id="users-sec" class="admin-section">
+            <h2 class="section-title">Foydalanuvchilarni boshqarish</h2>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email / Telefon</th>
+                            <th>Status</th>
+                            <th>Sana</th>
+                            <th>Amallar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Yangi foydalanuvchi qo'shish</h3>
+                <label for="newUserInput">Email yoki Telefon raqam:</label>
+                <input type="text" id="newUserInput" placeholder="+998 90 123 45 67 yoki email">
+                <label for="newUserPassword">Yangi foydalanuvchi uchun parol:</label>
+                <input type="password" id="newUserPassword" placeholder="Parolni kiriting">
+                <button class="btn-submit" onclick="addUser()">Qo'shish</button>
+            </div>
         </div>
 
-        <h2 class="section-title" style="margin-top: 40px;">Mahsulotlar katalogini boshqarish</h2>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Rasm</th>
-                        <th>Mahsulot nomi</th>
-                        <th>Kategoriya</th>
-                        <th>Narxi</th>
-                        <th>Holati</th>
-                        <th>Amallar</th>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody">
-                </tbody>
-            </table>
-        </div>
+        <div id="products-sec" class="admin-section">
+            <h2 class="section-title">Mahsulotlar katalogini boshqarish</h2>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Rasm</th>
+                            <th>Mahsulot nomi</th>
+                            <th>Kategoriya</th>
+                            <th>Narxi</th>
+                            <th>Telefon raqam</th>
+                            <th>Tavsif</th>
+                            <th>Holati</th>
+                            <th>Amallar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody"></tbody>
+                </table>
+            </div>
 
-        <div class="form-group">
-            <label for="newProductName">Yangi mahsulot nomi:</label>
-            <input type="text" id="newProductName" placeholder="Masalan: Premium Kovka Darvoza">
-            
-            <label for="newProductCategory">Kategoriya tanlang:</label>
-            <select id="newProductCategory">
-                <option value="Telefon">Telefon</option>
-                <option value="Noutbuk">Noutbuk</option>
-                <option value="Texnika">Texnika</option>
-            </select>
+            <div class="form-group">
+                <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Katalogga yangi mahsulot qo'shish</h3>
+                
+                <label for="newProductName">Yangi mahsulot nomi:</label>
+                <input type="text" id="newProductName" placeholder="Masalan: Veb-sayt yaratish xizmati">
+                
+                <label for="newProductCategory">Kategoriya tanlang:</label>
+                <select id="newProductCategory">
+                    <option value="Qurilish">Qurilish</option>
+                    <option value="Texnika & Gadjetlar">Texnika & Gadjetlar</option>
+                    <option value="Avto / Detaling">Avto / Detaling</option>
+                    <option value="IT va Dasturlash">IT va Dasturlash</option>
+                    <option value="Biznes & Tender">Biznes & Tender</option>
+                    <option value="Ta'lim & Kurslar">Ta'lim & Kurslar</option>
+                </select>
 
-            <label for="newProductPrice">Narxi:</label>
-            <input type="text" id="newProductPrice" placeholder="Masalan: 1 200 000 so'm yoki Kelishuv asosida">
-            
-            <label for="newProductImage">Rasm manzili (masalan: ./assets/darvoza.png):</label>
-            <input type="text" id="newProductImage" placeholder="./assets/Без названия.png">
-            
-            <button class="btn-submit" onclick="addProduct()">Mahsulot qo'shish</button>
+                <label for="newProductPrice">Narxi:</label>
+                <input type="text" id="newProductPrice" placeholder="Masalan: 5 000 000 so'm">
+
+                <label for="newProductPhone">Aloqa uchun telefon raqam:</label>
+                <input type="text" id="newProductPhone" placeholder="Masalan: +998 90 123 45 67">
+                
+                <label for="newProductDesc">Batafsil ma'lumot (Tavsif):</label>
+                <textarea id="newProductDesc" rows="4" placeholder="Xizmat yoki mahsulot haqida to'liqroq ma'lumot kiriting"></textarea>
+
+                <label for="newProductFile">Rasm faylini yuklash (Kompyuterdan):</label>
+                <input type="file" id="newProductFile" accept="image/*">
+
+                <label for="newProductImage">Yoki Rasm manzili (URL):</label>
+                <input type="text" id="newProductImage" placeholder="https://picsum.photos/400/300">
+                
+                <button class="btn-submit" onclick="addProduct()">Mahsulotni katalogga qo'shish</button>
+            </div>
         </div>
     </main>
 
     <script>
+        function switchTab(element) {
+            document.querySelectorAll('.menu-list a').forEach(a => a.classList.remove('active'));
+            element.classList.add('active');
+
+            const targetId = element.getAttribute('data-target');
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            document.getElementById(targetId).classList.add('active-section');
+        }
+
+        // Foydalanuvchilarni yuklash
         function loadUsers() {
             const tableBody = document.getElementById('userTableBody');
             const totalUsersElement = document.getElementById('totalUsers');
@@ -443,15 +481,16 @@
             totalUsersElement.innerText = users.length;
 
             if (users.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Foydalanuvchilar mavjud emas.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Foydalanuvchilar mavjud emas.</td></tr>`;
             } else {
                 users.forEach((user, index) => {
+                    const userIdentifier = user.email ? user.email : user.phone;
                     const row = `
                         <tr>
                             <td>#${index + 300}</td>
-                            <td>${user.email || user.phone}</td>
+                            <td>${userIdentifier || 'Ma\'lumot yo\'q'}</td>
                             <td><span class="badge-active">${user.status || "Faol"}</span></td>
-                            <td>${user.date}</td>
+                            <td>${user.date || new Date().toISOString().split('T')[0]}</td>
                             <td>
                                 <button class="btn-action" onclick="resetUserPassword(${index})">Parol tiklash</button>
                                 <button class="btn-action delete" onclick="deleteUser(${index})">O'chirish</button>
@@ -466,22 +505,20 @@
         function resetUserPassword(index) {
             let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
             let user = users[index];
-            
             if (user) {
-                let newPassword = prompt(`Foydalanuvchi (${user.email || user.phone}) uchun yangi parolni kiriting:`);
+                const userIdentifier = user.email ? user.email : user.phone;
+                let newPassword = prompt(`Foydalanuvchi (${userIdentifier}) uchun yangi parolni kiriting:`);
                 if (newPassword !== null && newPassword.trim() !== "") {
-                    user.password = newPassword;
+                    users[index].password = newPassword;
                     localStorage.setItem('registeredUsers', JSON.stringify(users));
                     alert("Parol muvaffaqiyatli o'zgartirildi!");
                     loadUsers();
-                } else if (newPassword !== null) {
-                    alert("Parol bo'sh bo'lishi mumkin emas!");
                 }
             }
         }
 
         function deleteUser(index) {
-            if (confirm("Haqiqatan ham o'chirishni xohlaysizmi?")) {
+            if (confirm("Haqiqatan ham ushbu foydalanuvchini o'chirishni xohlaysizmi?")) {
                 let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
                 users.splice(index, 1);
                 localStorage.setItem('registeredUsers', JSON.stringify(users));
@@ -490,76 +527,96 @@
         }
 
         function addUser() {
-            let val = document.getElementById('newUserInput').value;
-            let password = document.getElementById('newUserPassword').value;
-
+            let val = document.getElementById('newUserInput').value.trim();
+            let password = document.getElementById('newUserPassword').value.trim();
             if (!val || !password) {
-                alert("Iltimos, barcha ma'lumotlarni kiriting (foydalanuvchi va parol)!");
+                alert("Iltimos, barcha ma'lumotlarni kiriting!");
                 return;
             }
-
             let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-            users.push({
-                email: val.includes('@') ? val : '',
-                phone: !val.includes('@') ? val : '',
+            
+            let newUser = {
                 password: password,
                 status: "Faol",
                 date: new Date().toISOString().split('T')[0]
-            });
+            };
 
+            if (val.includes('@')) {
+                newUser.email = val;
+                newUser.phone = '';
+            } else {
+                newUser.email = '';
+                newUser.phone = val;
+            }
+
+            users.push(newUser);
             localStorage.setItem('registeredUsers', JSON.stringify(users));
+            
             document.getElementById('newUserInput').value = '';
             document.getElementById('newUserPassword').value = '';
+            
             loadUsers();
-            alert("Foydalanuvchi qo'shildi!");
+            alert("Yangi foydalanuvchi muvaffaqiyatli qo'shildi!");
         }
 
+        function toggleDescription(index) {
+            const descSpan = document.getElementById(`desc-${index}`);
+            const btn = document.getElementById(`btn-more-${index}`);
+            
+            if (descSpan.classList.contains('expanded')) {
+                descSpan.classList.remove('expanded');
+                btn.innerText = "Ko'proq...";
+            } else {
+                descSpan.classList.add('expanded');
+                btn.innerText = "Yopish";
+            }
+        }
+
+        // Mahsulotlarni yuklash (Telefon raqami bilan)
         function loadProducts() {
             const productTableBody = document.getElementById('productTableBody');
             const totalProductsElement = document.getElementById('totalProducts');
             
-            // Default mahsulotlar ham o'z tarkibida kategoriyaga ega bo'lishini ta'minlaymiz
             const defaultProducts = [
-                { id: '#101', name: "Premium Kovka Darvoza", category: "Darvoza", price: "Kelishuv asosida", image: "./assets/Без названия.png", status: 'Sotuvda' },
-                { id: '#102', name: "Zamonaviy Panjara", category: "Panjara", price: "1 200 000 so'm / m²", image: "./assets/Без названия.png", status: 'Sotuvda' },
-                { id: '#103', name: "Sifatli Naves", category: "Naves", price: "Kelishuv asosida", image: "./assets/Без названия.png", status: 'Sotuvda' }
+                { id: '#101', name: "Premium Kovka Darvoza", category: "Qurilish", price: "Kelishuv asosida", phone: "+998 90 123 45 67", description: "Yuqori sifatli qalin metalldan tayyorlangan chidamli darvoza.", image: "https://picsum.photos/id/10/400/300", status: 'Sotuvda' },
+                { id: '#102', name: "iPhone 16 Pro Max", category: "Texnika & Gadjetlar", price: "1200$", phone: "+998 93 777 77 77", description: "Yangi avlod flagman smartfoni.", image: "https://picsum.photos/id/15/400/300", status: 'Sotuvda' }
             ];
 
             const products = JSON.parse(localStorage.getItem('adminProducts')) || defaultProducts;
 
-            // Agar birinchi marta kirilayotgan bo'lsa va localstorage bo'sh bo'lsa uni default mahsulotlar bilan to'ldiramiz
             if (!localStorage.getItem('adminProducts')) {
                 localStorage.setItem('adminProducts', JSON.stringify(defaultProducts));
             }
 
-            if(totalProductsElement) {
-                totalProductsElement.innerText = products.length;
-            }
-
+            if(totalProductsElement) totalProductsElement.innerText = products.length;
             productTableBody.innerHTML = '';
 
             if (products.length === 0) {
-                productTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Mahsulotlar mavjud emas.</td></tr>`;
+                productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888;">Mahsulotlar katalogi bo'sh.</td></tr>`;
                 return;
             }
 
             products.forEach((product, index) => {
                 let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
-                // Eski tovarlarda kategoriya bo'lmasa default 'Darvoza' qo'yiladi
-                let productCategory = product.category || 'Darvoza'; 
+                let txtDesc = product.description || 'Tavsif yo\'q';
+                let displayCategory = product.category || 'Qurilish';
+                let displayPhone = product.phone || 'Kiritilmagan';
 
                 const row = `
                     <tr>
                         <td>${product.id || '#' + (index + 101)}</td>
-                        <td>
-                            <img src="${product.image || './assets/Без названия.png'}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                        </td>
+                        <td><img src="${product.image}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
                         <td>${product.name}</td>
-                        <td><span class="badge-category">${productCategory}</span></td>
+                        <td><span class="badge-category">${displayCategory}</span></td>
                         <td>${product.price}</td>
+                        <td>${displayPhone}</td>
+                        <td>
+                            <span id="desc-${index}" class="desc-text">${txtDesc}</span>
+                            ${txtDesc.length > 20 ? `<button id="btn-more-${index}" class="btn-more" onclick="toggleDescription(${index})">Ko'proq...</button>` : ''}
+                        </td>
                         <td><span class="${statusClass}">${product.status || 'Sotuvda'}</span></td>
                         <td>
-                            <button class="btn-action" onclick="toggleProductStatus(${index})">Holatni almashtirish</button>
+                            <button class="btn-action" onclick="toggleProductStatus(${index})">Holat</button>
                             <button class="btn-action" onclick="editProduct(${index})">Tahrirlash</button>
                             <button class="btn-action delete" onclick="deleteProduct(${index})">O'chirish</button>
                         </td>
@@ -578,40 +635,66 @@
             }
         }
 
+        // Mahsulot qo'shish funksiyasi (Telefon raqamini saqlaydi)
         function addProduct() {
-            const name = document.getElementById('newProductName').value;
+            const name = document.getElementById('newProductName').value.trim();
             const category = document.getElementById('newProductCategory').value;
-            const price = document.getElementById('newProductPrice').value;
-            const image = document.getElementById('newProductImage').value || './assets/Без названия.png';
+            const price = document.getElementById('newProductPrice').value.trim();
+            const phone = document.getElementById('newProductPhone').value.trim();
+            const desc = document.getElementById('newProductDesc').value.trim();
+            const fileInput = document.getElementById('newProductFile');
+            const imageUrlInput = document.getElementById('newProductImage').value.trim();
 
-            if (!name || !price) {
-                alert("Iltimos, mahsulot nomi va narxini kiriting!");
+            if (!name || !price || !phone || !desc) {
+                alert("Iltimos, majburiy maydonlarni (Nomi, Narxi, Telefon, Tavsif) to'ldiring!");
                 return;
             }
 
             let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-            let newId = '#' + (products.length + 101); 
+            const uniqueId = '#' + Math.floor(100 + Math.random() * 900);
 
-            products.push({
-                id: newId,
-                name: name,
-                category: category, // 🔥 Kategoriya bu yerda saqlanadi
-                price: price,
-                image: image,
-                status: 'Sotuvda'
-            });
+            const appendProduct = (imgData) => {
+                products.push({
+                    id: uniqueId,
+                    name: name,
+                    category: category,
+                    price: price,
+                    phone: phone,
+                    description: desc,
+                    image: imgData,
+                    status: 'Sotuvda'
+                });
+                saveAndResetProductForm(products);
+            };
 
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    appendProduct(e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                const finalImage = imageUrlInput || 'https://picsum.photos/400/300';
+                appendProduct(finalImage);
+            }
+        }
+
+        function saveAndResetProductForm(products) {
             localStorage.setItem('adminProducts', JSON.stringify(products));
+            
             document.getElementById('newProductName').value = '';
             document.getElementById('newProductPrice').value = '';
+            document.getElementById('newProductPhone').value = '';
+            document.getElementById('newProductDesc').value = '';
             document.getElementById('newProductImage').value = '';
-
+            document.getElementById('newProductFile').value = '';
+            
             loadProducts();
-            alert("Mahsulot muvaffaqiyatli qo'shildi!");
+            alert("Mahsulot muvaffaqiyatli katalogga qo'shildi!");
         }
 
         function deleteProduct(index) {
-            if (confirm("Haqiqatan ham mahsulotni o'chirmoqchimisiz?")) {
+            if (confirm("Ushbu mahsulotni katalogdan butunlay o'chirmoqchimisiz?")) {
                 let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
                 products.splice(index, 1);
                 localStorage.setItem('adminProducts', JSON.stringify(products));
@@ -619,24 +702,31 @@
             }
         }
 
-        if (window.editProduct === undefined) {
-            window.editProduct = function(index) {
-                let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
-                let product = products[index];
+        // Mahsulotni tahrirlash (Telefon raqami bilan)
+        function editProduct(index) {
+            let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
+            let p = products[index];
 
-                let newName = prompt("Mahsulot nomini o'zgartirish:", product.name);
-                let newCategory = prompt("Mahsulot kategoriyasini o'zgartirish (Darvoza, Panjara, Naves):", product.category || 'Darvoza');
-                let newPrice = prompt("Mahsulot narxini o'zgartirish:", product.price);
-                let newImage = prompt("Mahsulot rasm manzili (URL) ni o'zgartirish:", product.image || './assets/Без названия.png');
+            let newName = prompt("Yangi nom kiriting:", p.name);
+            let newCategory = prompt("Yangi kategoriya tanlang:", p.category || 'Qurilish');
+            let newPrice = prompt("Yangi narx kiriting:", p.price);
+            let newPhone = prompt("Yangi telefon raqam kiriting:", p.phone || '');
+            let newDesc = prompt("Yangi tavsif kiriting:", p.description || '');
+            let newImg = prompt("Yangi rasm URL manzilini kiriting (bo'sh qoldirilsa eski rasm saqlanadi):", p.image);
 
-                if (newName && newCategory && newPrice && newImage) {
-                    products[index].name = newName;
-                    products[index].category = newCategory; // Tahrirlashda kategoriyani yangilash
-                    products[index].price = newPrice;
-                    products[index].image = newImage;
-                    localStorage.setItem('adminProducts', JSON.stringify(products));
-                    loadProducts();
-                }
+            if (newName && newPrice && newPhone && newDesc) {
+                products[index] = { 
+                    ...p, 
+                    name: newName, 
+                    category: newCategory || p.category, 
+                    price: newPrice, 
+                    phone: newPhone,
+                    description: newDesc, 
+                    image: newImg || p.image 
+                };
+                localStorage.setItem('adminProducts', JSON.stringify(products));
+                loadProducts();
+                alert("Mahsulot muvaffaqiyatli tahrirlandi!");
             }
         }
 
