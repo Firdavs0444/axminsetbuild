@@ -125,6 +125,7 @@
         .admin-section {
             display: none;
         }
+
         .admin-section.active-section {
             display: block;
         }
@@ -174,7 +175,7 @@
             display: inline-block;
             vertical-align: middle;
         }
-        
+
         .desc-text.expanded {
             white-space: normal;
             max-width: none;
@@ -345,9 +346,11 @@
     </aside>
 
     <main class="main-content">
-        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div
+            style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <a href="index.html" class="nav-link-btn">&#8592; Asosiy sahifaga qaytish</a>
-            <button onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'" style="background: var(--danger); border: none; padding: 8px 16px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold;">Chiqish</button>
+            <button onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'"
+                style="background: var(--danger); border: none; padding: 8px 16px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold;">Chiqish</button>
         </div>
 
         <div class="header">
@@ -372,7 +375,8 @@
 
         <div id="dashboard-sec" class="admin-section active-section">
             <h2 class="section-title">Umumiy statistika va xulosa</h2>
-            <p style="color: #aaa; line-height: 1.6;">Xush kelibsiz! Chap tomondagi menyu orqali foydalanuvchilar ro'yxatini boshqarishingiz yoki xizmatlar/mahsulotlar katalogiga o'zgartirish kiritishingiz mumkin.</p>
+            <p style="color: #aaa; line-height: 1.6;">Xush kelibsiz! Chap tomondagi menyu orqali foydalanuvchilar
+                ro'yxatini boshqarishingiz yoki xizmatlar/mahsulotlar katalogiga o'zgartirish kiritishingiz mumkin.</p>
         </div>
 
         <div id="users-sec" class="admin-section">
@@ -425,10 +429,10 @@
 
             <div class="form-group">
                 <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Katalogga yangi mahsulot qo'shish</h3>
-                
+
                 <label for="newProductName">Yangi mahsulot nomi:</label>
                 <input type="text" id="newProductName" placeholder="Masalan: Veb-sayt yaratish xizmati">
-                
+
                 <label for="newProductCategory">Kategoriya tanlang:</label>
                 <select id="newProductCategory">
                     <option value="Qurilish">Qurilish</option>
@@ -444,346 +448,83 @@
 
                 <label for="newProductPhone">Aloqa uchun telefon raqam:</label>
                 <input type="text" id="newProductPhone" placeholder="Masalan: +998 90 123 45 67">
-                
+
                 <label for="newProductDesc">Batafsil ma'lumot (Tavsif):</label>
-                <textarea id="newProductDesc" rows="4" placeholder="Xizmat yoki mahsulot haqida to'liqroq ma'lumot kiriting"></textarea>
+                <textarea id="newProductDesc" rows="4"
+                    placeholder="Xizmat yoki mahsulot haqida to'liqroq ma'lumot kiriting"></textarea>
 
                 <label for="newProductFile">Rasm faylini yuklash (Kompyuterdan):</label>
                 <input type="file" id="newProductFile" accept="image/*">
 
                 <label for="newProductImage">Yoki Rasm manzili (URL):</label>
                 <input type="text" id="newProductImage" placeholder="https://picsum.photos/400/300">
-                
+
                 <button class="btn-submit" onclick="addProduct()">Mahsulotni katalogga qo'shish</button>
             </div>
         </div>
     </main>
 
+
     <script>
-        // Mock API havolasi
-        const API_URL = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+       // Admin paneli uchun asosiy skript
+document.addEventListener("DOMContentLoaded", () => {
+    const PRODUCT_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+    const USER_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/user";
 
-        function switchTab(element) {
-            document.querySelectorAll('.menu-list a').forEach(a => a.classList.remove('active'));
-            element.classList.add('active');
+    // Sahifalarni almashtirish funksiyasi
+    window.switchTab = function(element) {
+        document.querySelectorAll('.menu-list a').forEach(a => a.classList.remove('active'));
+        element.classList.add('active');
+        document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active-section'));
+        document.getElementById(element.dataset.target).classList.add('active-section');
+    };
 
-            const targetId = element.getAttribute('data-target');
-            document.querySelectorAll('.admin-section').forEach(section => {
-                section.classList.remove('active-section');
-            });
-            document.getElementById(targetId).classList.add('active-section');
+    // Ma'lumotlarni yuklash
+    async function loadData() {
+        const users = await (await fetch(USER_API)).json();
+        const products = await (await fetch(PRODUCT_API)).json();
+
+        // Statistikani yangilash
+        document.getElementById('totalUsers').textContent = users.length;
+        document.getElementById('totalProducts').textContent = products.length;
+
+        // Jadvalni to'ldirish
+        const userBody = document.getElementById('userTableBody');
+        userBody.innerHTML = users.map(u => `<tr><td>${u.id}</td><td>${u.email || u.phone}</td><td><span class="badge-active">Faol</span></td><td>-</td><td><button class="btn-action delete" onclick="deleteItem('${USER_API}', ${u.id})">O'chirish</button></td></tr>`).join('');
+
+        const prodBody = document.getElementById('productTableBody');
+        prodBody.innerHTML = products.map(p => `<tr><td>${p.id}</td><td><img src="${p.image}" width="50"></td><td>${p.name}</td><td>${p.category}</td><td>${p.price}</td><td>${p.phone}</td><td><span class="desc-text">${p.description}</span></td><td><span class="badge-active">Sotuvda</span></td><td><button class="btn-action delete" onclick="deleteItem('${PRODUCT_API}', ${p.id})">O'chirish</button></td></tr>`).join('');
+    }
+
+    // O'chirish funksiyasi
+    window.deleteItem = async function(url, id) {
+        if(confirm("Rostdan ham o'chirmoqchimisiz?")) {
+            await fetch(`${url}/${id}`, { method: 'DELETE' });
+            loadData();
         }
+    };
 
-        // 1. FOYDALANUVCHILARNI YUKLASH
-        function loadUsers() {
-            const tableBody = document.getElementById('userTableBody');
-            const totalUsersElement = document.getElementById('totalUsers');
-            const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-
-            if(!tableBody) return;
-            tableBody.innerHTML = '';
-            if(totalUsersElement) totalUsersElement.innerText = users.length;
-
-            if (users.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Foydalanuvchilar mavjud emas.</td></tr>`;
-            } else {
-                users.forEach((user, index) => {
-                    const userIdentifier = user.email ? user.email : user.phone;
-                    const row = `
-                        <tr>
-                            <td>#${index + 300}</td>
-                            <td>${userIdentifier || 'Ma\'lumot yo\'q'}</td>
-                            <td><span class="badge-active">${user.status || "Faol"}</span></td>
-                            <td>${user.date || new Date().toISOString().split('T')[0]}</td>
-                            <td>
-                                <button class="btn-action" onclick="resetUserPassword(${index})">Parol tiklash</button>
-                                <button class="btn-action delete" onclick="deleteUser(${index})">O'chirish</button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.insertAdjacentHTML('beforeend', row);
-                });
-            }
-        }
-
-        function resetUserPassword(index) {
-            let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-            let user = users[index];
-            if (user) {
-                const userIdentifier = user.email ? user.email : user.phone;
-                let newPassword = prompt(`Foydalanuvchi (${userIdentifier}) uchun yangi parolni kiriting:`);
-                if (newPassword !== null && newPassword.trim() !== "") {
-                    users[index].password = newPassword;
-                    localStorage.setItem('registeredUsers', JSON.stringify(users));
-                    alert("Parol muvaffaqiyatli o'zgartirildi!");
-                    loadUsers();
-                }
-            }
-        }
-
-        function deleteUser(index) {
-            if (confirm("Haqiqatan ham ushbu foydalanuvchini o'chirishni xohlaysizmi?")) {
-                let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-                users.splice(index, 1);
-                localStorage.setItem('registeredUsers', JSON.stringify(users));
-                loadUsers();
-            }
-        }
-
-        function addUser() {
-            let val = document.getElementById('newUserInput').value.trim();
-            let password = document.getElementById('newUserPassword').value.trim();
-            if (!val || !password) {
-                alert("Iltimos, barcha ma'lumotlarni kiriting!");
-                return;
-            }
-            let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-            
-            let newUser = {
-                password: password,
-                status: "Faol",
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            if (val.includes('@')) {
-                newUser.email = val;
-                newUser.phone = '';
-            } else {
-                newUser.email = '';
-                newUser.phone = val;
-            }
-
-            users.push(newUser);
-            localStorage.setItem('registeredUsers', JSON.stringify(users));
-            
-            document.getElementById('newUserInput').value = '';
-            document.getElementById('newUserPassword').value = '';
-            
-            loadUsers();
-            alert("Yangi foydalanuvchi muvaffaqiyatli qo'shildi!");
-        }
-
-        function toggleDescription(index) {
-            const descSpan = document.getElementById(`desc-${index}`);
-            const btn = document.getElementById(`btn-more-${index}`);
-            
-            if (descSpan.classList.contains('expanded')) {
-                descSpan.classList.remove('expanded');
-                btn.innerText = "Ko'proq...";
-            } else {
-                descSpan.classList.add('expanded');
-                btn.innerText = "Yopish";
-            }
-        }
-
-        // 2. MAHSULOTLARNI MOCK API'DAN YUKLAB JADVALGA CHIQARISH (GET)
-        async function loadProducts() {
-            const productTableBody = document.getElementById('productTableBody');
-            const totalProductsElement = document.getElementById('totalProducts');
-            
-            if (!productTableBody) return;
-            productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 20px;">Yuklanmoqda...</td></tr>`;
-
-            try {
-                const response = await fetch(API_URL);
-                
-                // Agar server 404 yoki boshqa xato bersa
-                if (!response.ok) {
-                    throw new Error("Serverdan javob kelmadi (API URL'ni tekshiring)");
-                }
-
-                const products = await response.json();
-
-                // Agar ma'lumot array bo'lmasa, xavfsiz chiqish
-                if (!Array.isArray(products)) {
-                    throw new Error("Ma'lumotlar formati noto'g'ri");
-                }
-
-                if(totalProductsElement) totalProductsElement.innerText = products.length;
-                productTableBody.innerHTML = '';
-
-                if (products.length === 0) {
-                    productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 20px;">Mahsulotlar katalogi bo'sh.</td></tr>`;
-                    return;
-                }
-
-                products.forEach((product, index) => {
-                    let statusClass = (product.status === 'Tugagan') ? 'badge-inactive' : 'badge-active';
-                    let txtDesc = product.description || 'Tavsif yo\'q';
-                    let displayCategory = product.category || 'Qurilish';
-                    let displayPhone = product.phone || 'Kiritilmagan';
-                    let displayId = product.id;
-
-                    const row = `
-                        <tr>
-                            <td>#${displayId}</td>
-                            <td><img src="${product.image || ''}" alt="Rasm" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></td>
-                            <td>${product.name || 'Nomsiz'}</td>
-                            <td><span class="badge-category">${displayCategory}</span></td>
-                            <td>${product.price || '0'}</td>
-                            <td>${displayPhone}</td>
-                            <td>
-                                <span id="desc-${index}" class="desc-text">${txtDesc}</span>
-                                ${txtDesc.length > 20 ? `<button id="btn-more-${index}" class="btn-more" onclick="toggleDescription(${index})">Ko'proq...</button>` : ''}
-                            </td>
-                            <td><span class="${statusClass}">${product.status || 'Sotuvda'}</span></td>
-                            <td>
-                                <button class="btn-action" onclick="toggleProductStatus('${product.id}', '${product.status}')">Holat</button>
-                                <button class="btn-action" onclick="editProduct('${product.id}')">Tahrirlash</button>
-                                <button class="btn-action delete" onclick="deleteProduct('${product.id}')">O'chirish</button>
-                            </td>
-                        </tr>
-                    `;
-                    productTableBody.insertAdjacentHTML('beforeend', row);
-                });
-            } catch (error) {
-                console.error("Xatolik:", error);
-                productTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--danger); padding: 20px;">Xatolik yuz berdi. API manzilini va internetni tekshiring.</td></tr>`;
-            }
-        }
-
-        // 3. MAHSULOT HOLATINI O'ZGARTIRISH (PUT)
-        async function toggleProductStatus(id, currentStatus) {
-            const nextStatus = (currentStatus === 'Tugagan') ? 'Sotuvda' : 'Tugagan';
-            try {
-                const response = await fetch(`${API_URL}/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status: nextStatus })
-                });
-
-                if (response.ok) {
-                    loadProducts(); 
-                }
-            } catch (error) {
-                console.error("Statusni o'zgartirishda xatolik:", error);
-            }
-        }
-
-        // 4. YANGI MAHSULOT QO'SHISH (POST)
-        async function addProduct() {
-            const name = document.getElementById('newProductName').value.trim();
-            const category = document.getElementById('newProductCategory').value;
-            const price = document.getElementById('newProductPrice').value.trim();
-            const phone = document.getElementById('newProductPhone').value.trim();
-            const desc = document.getElementById('newProductDesc').value.trim();
-            const fileInput = document.getElementById('newProductFile');
-            const imageUrlInput = document.getElementById('newProductImage').value.trim();
-
-            if (!name || !price || !phone || !desc) {
-                alert("Iltimos, majburiy maydonlarni (Nomi, Narxi, Telefon, Tavsif) to'ldiring!");
-                return;
-            }
-
-            const sendToAPI = async (imgData) => {
-                const newProduct = {
-                    name: name,
-                    category: category,
-                    price: price,
-                    phone: phone,
-                    description: desc,
-                    image: imgData,
-                    status: 'Sotuvda'
-                };
-
-                try {
-                    const response = await fetch(API_URL, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(newProduct)
-                    });
-
-                    if (response.ok) {
-                        document.getElementById('newProductName').value = '';
-                        document.getElementById('newProductPrice').value = '';
-                        document.getElementById('newProductPhone').value = '';
-                        document.getElementById('newProductDesc').value = '';
-                        document.getElementById('newProductImage').value = '';
-                        fileInput.value = '';
-                        
-                        loadProducts();
-                        alert("Mahsulot muvaffaqiyatli server katalogiga qo'shildi!");
-                    } else {
-                        alert("Xatolik: Serverga saqlab bo'lmadi.");
-                    }
-                } catch (error) {
-                    console.error("Xatolik:", error);
-                }
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    sendToAPI(e.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                const finalImage = imageUrlInput || 'https://picsum.photos/400/300';
-                sendToAPI(finalImage);
-            }
-        }
-
-        // 5. MAHSULOTNI O'CHIRISH (DELETE)
-        async function deleteProduct(id) {
-            if (confirm("Ushbu mahsulotni katalogdan butunlay o'chirmoqchimisiz?")) {
-                try {
-                    const response = await fetch(`${API_URL}/${id}`, {
-                        method: "DELETE"
-                    });
-
-                    if (response.ok) {
-                        alert("Mahsulot muvaffaqiyatli o'chirildi!");
-                        loadProducts();
-                    }
-                } catch (error) {
-                    console.error("O'chirishda xatolik:", error);
-                }
-            }
-        }
-
-        // 6. MAHSULOTNI TAHRIRLASH (PUT)
-        async function editProduct(id) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`);
-                const p = await res.json();
-
-                let newName = prompt("Yangi nom kiriting:", p.name);
-                let newCategory = prompt("Yangi kategoriya tanlang:", p.category);
-                let newPrice = prompt("Yangi narx kiriting:", p.price);
-                let newPhone = prompt("Yangi telefon raqam kiriting:", p.phone);
-                let newDesc = prompt("Yangi tavsif kiriting:", p.description);
-                let newImg = prompt("Yangi rasm URL manzilini kiriting (eski rasm uchun bo'sh qoldiring):", p.image);
-
-                if (newName && newPrice && newPhone && newDesc) {
-                    const updatedProduct = {
-                        name: newName,
-                        category: newCategory || p.category,
-                        price: newPrice,
-                        phone: newPhone,
-                        description: newDesc,
-                        image: newImg || p.image
-                    };
-
-                    const response = await fetch(`${API_URL}/${id}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(updatedProduct)
-                    });
-
-                    if (response.ok) {
-                        alert("Mahsulot muvaffaqiyatli tahrirlandi!");
-                        loadProducts();
-                    }
-                }
-            } catch (error) {
-                console.error("Tahrirlashda xatolik:", error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUsers();
-            loadProducts();
+    // Mahsulot qo'shish
+    window.addProduct = async function() {
+        const newProduct = {
+            name: document.getElementById('newProductName').value,
+            category: document.getElementById('newProductCategory').value,
+            price: document.getElementById('newProductPrice').value,
+            phone: document.getElementById('newProductPhone').value,
+            description: document.getElementById('newProductDesc').value,
+            image: document.getElementById('newProductImage').value || 'https://via.placeholder.com/150'
+        };
+        await fetch(PRODUCT_API, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newProduct)
         });
+        alert("Mahsulot qo'shildi!");
+        loadData();
+    };
+
+    loadData();
+});
     </script>
 </body>
 

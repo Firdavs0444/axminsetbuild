@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
             background-color: #0d0d0d;
             color: #fff;
@@ -20,6 +22,7 @@
             height: 100vh;
             padding: 20px;
         }
+
         .login-card {
             background-color: #161616;
             border: 1px solid #2a2a2a;
@@ -29,9 +32,22 @@
             max-width: 360px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
-        h2 { margin-bottom: 20px; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #888; }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+        }
+
         input {
             width: 100%;
             padding: 12px;
@@ -42,6 +58,7 @@
             font-size: 16px;
             outline: none;
         }
+
         button {
             width: 100%;
             padding: 12px;
@@ -54,10 +71,203 @@
             transition: 0.3s;
             font-size: 16px;
         }
-        button:hover { opacity: 0.9; }
-        .error { color: #ef4444; font-size: 14px; margin-top: 10px; text-align: center; }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
+<script>
+    // ================= API =================
+    const PRODUCT_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
+    const USER_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/user";
+
+    let allProducts = [];
+
+    // ================= PRODUCTLAR =================
+    async function fetchProducts() {
+        try {
+            const response = await fetch(PRODUCT_API);
+            allProducts = await response.json();
+
+            renderProducts(allProducts);
+        } catch (error) {
+            console.log("Mahsulot yuklashda xato:", error);
+        }
+    }
+
+   
+    // ================= CATEGORY =================
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+
+            document
+                .querySelector('.cat-btn.active')
+                .classList.remove('active');
+
+            btn.classList.add('active');
+
+            const category = btn.dataset.category;
+
+            if (category === 'Barchasi') {
+                renderProducts(allProducts);
+            } else {
+
+                const filtered = allProducts.filter(
+                    item => item.category === category
+                );
+
+                renderProducts(filtered);
+            }
+        });
+    });
+
+    // ================= SIGN UP =================
+    const signUpBtn = document.getElementById('signUpBtn');
+    const signUpModal = document.getElementById('signUpModal');
+    const signUpForm = document.getElementById('signUpForm');
+
+    signUpBtn.addEventListener('click', () => {
+        signUpModal.style.display = 'flex';
+    });
+
+    signUpForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
+        const password = document.getElementById('regPassword').value;
+
+        const userData = {
+            email,
+            phone,
+            password
+        };
+
+        try {
+
+            const response = await fetch(USER_API, {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(userData)
+            });
+
+            if (response.ok) {
+
+                alert("Ro'yxatdan o'tildi ✅");
+
+                signUpForm.reset();
+
+                signUpModal.style.display = 'none';
+
+            } else {
+                alert("Xatolik yuz berdi");
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Server bilan ulanishda xato");
+        }
+    });
+
+    // ================= SIGN IN =================
+    const signInForm = document.getElementById('signInForm');
+
+    signInForm.addEventListener('submit', async (e) => {
+
+        e.preventDefault();
+
+        const inputs = signInForm.querySelectorAll('input');
+
+        const login = inputs[0].value;
+        const password = inputs[1].value;
+
+        try {
+
+            const response = await fetch(USER_API);
+
+            const users = await response.json();
+
+            const foundUser = users.find(user =>
+                (user.email === login || user.phone === login)
+                &&
+                user.password === password
+            );
+
+            if (foundUser) {
+
+                alert("Tizimga kirdingiz ✅");
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(foundUser)
+                );
+
+                document.getElementById('logOutBtn').style.display = 'block';
+
+                document.getElementById('signInBtn').style.display = 'none';
+
+                document.getElementById('signUpBtn').style.display = 'none';
+
+                document.getElementById('signInModal').style.display = 'none';
+
+            } else {
+
+                alert("Login yoki parol xato ❌");
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Server xatosi");
+        }
+    });
+
+    // ================= SIGN IN OPEN =================
+    document.getElementById('signInBtn').addEventListener('click', () => {
+        document.getElementById('signInModal').style.display = 'flex';
+    });
+
+    // ================= LOGOUT =================
+    document.getElementById('logOutBtn').addEventListener('click', () => {
+
+        localStorage.removeItem('user');
+
+        alert("Chiqdingiz");
+
+        location.reload();
+    });
+
+    // ================= AUTO LOGIN =================
+    const savedUser = localStorage.getItem('user');
+
+    if (savedUser) {
+
+        document.getElementById('logOutBtn').style.display = 'block';
+
+        document.getElementById('signInBtn').style.display = 'none';
+
+        document.getElementById('signUpBtn').style.display = 'none';
+    }
+
+    // ================= START =================
+    fetchProducts();
+</script>
+
 <body>
     <div class="login-card">
         <h2>Admin Kirish</h2>
@@ -74,13 +284,13 @@
             <div id="errorMsg" class="error"></div>
         </form>
     </div>
-    
+
     <script>
-        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+        document.getElementById('adminLoginForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
-            
+
             if (user === 'admin' && pass === '12345') {
                 localStorage.setItem('isAdminLoggedIn', 'true');
                 window.location.href = 'admin.html'; // Panelga yo'naltirish
@@ -90,4 +300,5 @@
         });
     </script>
 </body>
+
 </html>
