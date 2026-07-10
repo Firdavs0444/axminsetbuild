@@ -4,46 +4,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Hub - Boshqaruv Markazi</title>
+    <title>Admin Hub — Boshqaruv Markazi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         :root {
-            --bg-color: #0d0d0d;
-            --card-bg: #161616;
-            --sidebar-bg: #121212;
-            --text-color: #e0e0e0;
-            --accent-green: #10b981;
-            --accent-yellow: #facc15;
-            --danger: #ef4444;
-            --border-color: #2a2a2a;
+            /* Rang tizimi — "bozor boshqaruv minorasi" konsepti: chuqur tungi fon + mis-amber signal */
+            --bg: #0a0c10;
+            --bg-elevated: #10131a;
+            --card-bg: #12151d;
+            --card-bg-alt: #151922;
+            --sidebar-bg: #0c0f15;
+            --border-color: #1f2530;
+            --border-soft: #1a1f28;
+
+            --text-primary: #edf0f4;
+            --text-secondary: #8b93a3;
+            --text-muted: #5c6474;
+
+            --accent: #e8934a;
+            --accent-hover: #f2a361;
+            --accent-soft: rgba(232, 147, 74, 0.12);
+            --accent-soft-strong: rgba(232, 147, 74, 0.22);
+
+            --success: #4fd1ae;
+            --success-soft: rgba(79, 209, 174, 0.12);
+
+            --danger: #ef5966;
+            --danger-soft: rgba(239, 89, 102, 0.12);
+
+            --font-display: 'Space Grotesk', 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+            --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: var(--font-body);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse 900px 500px at 15% -10%, rgba(232, 147, 74, 0.07), transparent 60%),
+                radial-gradient(ellipse 700px 500px at 100% 0%, rgba(79, 209, 174, 0.05), transparent 55%);
+            color: var(--text-primary);
             display: flex;
             min-height: 100vh;
             flex-direction: row;
+            -webkit-font-smoothing: antialiased;
         }
 
+        ::selection {
+            background: var(--accent-soft-strong);
+            color: #fff;
+        }
+
+        /* Fokus holati — bosib ko'rish uchun ko'rinadigan bo'lishi shart */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* ---------- SIDEBAR ---------- */
         .sidebar {
-            width: 260px;
+            width: 264px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
-            padding: 30px 20px;
+            padding: 28px 18px;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        .sidebar h2 {
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 8px 36px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            background: linear-gradient(155deg, var(--accent) 0%, #c96f2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 15px;
+            color: #14100b;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(232, 147, 74, 0.35);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .brand-text strong {
+            font-family: var(--font-display);
+            font-size: 17px;
+            font-weight: 600;
             color: #fff;
-            margin-bottom: 40px;
-            font-size: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .nav-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0 12px 10px;
         }
 
         .menu-list {
@@ -51,93 +150,306 @@
         }
 
         .menu-list li {
-            margin-bottom: 20px;
+            margin-bottom: 4px;
         }
 
         .menu-list a {
-            color: var(--text-color);
+            color: var(--text-secondary);
             text-decoration: none;
             display: flex;
             align-items: center;
+            gap: 12px;
             padding: 10px 12px;
-            border-radius: 6px;
-            transition: 0.3s;
+            border-radius: 8px;
+            transition: color 0.18s ease, background-color 0.18s ease;
             cursor: pointer;
+            font-size: 14.5px;
+            font-weight: 500;
+            position: relative;
         }
 
-        .menu-list a:hover,
+        .menu-list a svg {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+            opacity: 0.75;
+            transition: opacity 0.18s ease;
+        }
+
+        .menu-list a:hover {
+            background-color: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .menu-list a:hover svg {
+            opacity: 1;
+        }
+
         .menu-list a.active {
-            background-color: #252525;
-            color: var(--accent-green);
+            background-color: var(--accent-soft);
+            color: var(--accent-hover);
         }
 
+        .menu-list a.active svg {
+            opacity: 1;
+        }
+
+        .menu-list a.active::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 18px;
+            border-radius: 0 3px 3px 0;
+            background: var(--accent);
+        }
+
+        .sidebar-foot {
+            margin-top: auto;
+            padding: 14px 12px 4px;
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-soft);
+        }
+
+        /* ---------- MAIN ---------- */
         .main-content {
             flex: 1;
-            padding: 40px;
+            padding: 36px 44px 60px;
             overflow-y: auto;
             min-width: 0;
         }
 
+        .topbar {
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: color 0.18s ease;
+        }
+
+        .nav-link-btn:hover {
+            color: var(--accent-hover);
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--danger-soft);
+            border: 1px solid rgba(239, 89, 102, 0.25);
+            padding: 8px 16px;
+            border-radius: 7px;
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: var(--font-body);
+            transition: background-color 0.18s ease, transform 0.12s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 89, 102, 0.2);
+        }
+
+        .btn-logout:active {
+            transform: scale(0.97);
+        }
+
         .header {
-            margin-bottom: 40px;
+            margin-bottom: 34px;
+        }
+
+        .header .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 3px var(--success-soft);
         }
 
         .header h1 {
+            font-family: var(--font-display);
             color: #fff;
-            font-size: 32px;
-            margin-bottom: 5px;
+            font-size: 33px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
         }
 
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14.5px;
+            max-width: 560px;
+            line-height: 1.55;
+        }
+
+        /* ---------- STAT CARDS ---------- */
         .metrics {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
             margin-bottom: 40px;
         }
 
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 10px;
+            padding: 22px 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent 70%);
+            opacity: 0.7;
+        }
+
+        .card:hover {
+            border-color: var(--border-soft);
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
         }
 
         .card-title {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background: var(--accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .card-icon svg {
+            width: 15px;
+            height: 15px;
         }
 
         .card-value {
             color: #fff;
-            font-size: 32px;
-            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 30px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
         }
 
+        /* ---------- SECTIONS ---------- */
         .section-title {
+            font-family: var(--font-display);
             color: #fff;
-            margin-bottom: 20px;
-            font-size: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            margin-bottom: 22px;
+            font-size: 19px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            border-radius: 2px;
+            background: var(--accent);
+            display: inline-block;
         }
 
         .admin-section {
             display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .admin-section.active-section {
             display: block;
         }
 
+        .dashboard-intro {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 14.5px;
+            max-width: 620px;
+        }
+
+        /* ---------- TABLE ---------- */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             background-color: var(--card-bg);
             -webkit-overflow-scrolling: touch;
+            box-shadow: var(--shadow-card);
         }
 
         .data-table {
@@ -148,23 +460,59 @@
 
         .data-table th,
         .data-table td {
-            padding: 15px 20px;
+            padding: 14px 20px;
             text-align: left;
-            color: var(--text-color);
+            color: var(--text-primary);
             vertical-align: middle;
+            font-size: 13.5px;
         }
 
         .data-table th {
-            background-color: #1c1c1c;
-            color: var(--accent-yellow);
+            background-color: var(--bg-elevated);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .data-table tr {
-            border-bottom: 1px solid var(--border-color);
+        .data-table td:first-child,
+        .data-table th:first-child {
+            padding-left: 22px;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--border-soft);
+            transition: background-color 0.15s ease;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.012);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: var(--accent-soft);
         }
 
         .data-table tr:last-child {
             border-bottom: none;
+        }
+
+        .data-table td:first-child {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 12.5px;
+        }
+
+        .data-table img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: block;
         }
 
         .desc-text {
@@ -174,6 +522,7 @@
             text-overflow: ellipsis;
             display: inline-block;
             vertical-align: middle;
+            color: var(--text-secondary);
         }
 
         .desc-text.expanded {
@@ -184,97 +533,187 @@
         .btn-more {
             background: none;
             border: none;
-            color: var(--accent-green);
+            color: var(--accent);
             cursor: pointer;
             font-size: 12px;
             margin-left: 5px;
             text-decoration: underline;
         }
 
-        .badge-active {
-            background-color: rgba(16, 185, 129, 0.15);
-            color: var(--accent-green);
-            padding: 4px 10px;
+        /* ---------- BADGES ---------- */
+        .badge-active,
+        .badge-inactive,
+        .badge-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 11px;
             border-radius: 20px;
             font-size: 12px;
+            font-weight: 500;
             white-space: nowrap;
+        }
+
+        .badge-active {
+            background-color: var(--success-soft);
+            color: var(--success);
+        }
+
+        .badge-active::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
         }
 
         .badge-inactive {
-            background-color: rgba(239, 68, 68, 0.15);
+            background-color: var(--danger-soft);
             color: var(--danger);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            white-space: nowrap;
         }
 
         .badge-category {
-            background-color: rgba(250, 204, 21, 0.15);
-            color: var(--accent-yellow);
-            padding: 4px 10px;
+            background-color: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
             border-radius: 6px;
-            font-size: 13px;
-            white-space: nowrap;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
         }
 
+        /* ---------- ACTION BUTTONS ---------- */
         .btn-action {
-            color: var(--accent-yellow);
+            color: var(--text-secondary);
             text-decoration: none;
-            margin-right: 12px;
+            margin-right: 8px;
             cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            font-size: 12.5px;
+            font-weight: 500;
+            font-family: var(--font-body);
             white-space: nowrap;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            padding: 7px 12px;
+            border-radius: 7px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
         }
 
-        .btn-action.delete {
+        .btn-action svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .btn-action.edit:hover {
+            color: var(--accent-hover);
+            border-color: var(--accent-soft-strong);
+            background: var(--accent-soft);
+        }
+
+        .btn-action.delete:hover {
             color: var(--danger);
+            border-color: rgba(239, 89, 102, 0.3);
+            background: var(--danger-soft);
         }
 
+        /* ---------- FORMS ---------- */
         .form-group {
             background-color: var(--card-bg);
-            padding: 24px;
+            padding: 26px;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             max-width: 100%;
-            width: 500px;
-            margin-top: 20px;
+            width: 520px;
+            margin-top: 22px;
+            box-shadow: var(--shadow-card);
         }
 
-        .form-group label {
+        .form-group h3,
+        .modal-box h3 {
+            font-family: var(--font-display);
+            color: #fff;
+            margin-bottom: 18px;
+            font-size: 16.5px;
+            font-weight: 600;
+        }
+
+        .form-group label,
+        .modal-box label {
             display: block;
-            margin-bottom: 8px;
-            color: #888;
-            font-size: 14px;
+            margin-bottom: 7px;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .form-group input,
         .form-group textarea,
-        .form-group select {
+        .form-group select,
+        .modal-box input,
+        .modal-box textarea,
+        .modal-box select {
+            display: block;
             width: 100%;
-            padding: 12px;
-            background-color: #1a1a1a;
+            padding: 11px 13px;
+            background-color: var(--bg-elevated);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 6px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            margin-bottom: 16px;
             outline: none;
             resize: vertical;
+            font-size: 13.5px;
+            font-family: var(--font-body);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus,
+        .modal-box input:focus,
+        .modal-box textarea:focus,
+        .modal-box select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .modal-box input::placeholder,
+        .modal-box textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group select,
+        .modal-box select {
+            cursor: pointer;
         }
 
         .btn-submit {
-            background-color: var(--accent-green);
-            color: #000;
+            background: linear-gradient(155deg, var(--accent-hover), var(--accent) 70%);
+            color: #14100b;
             border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            font-family: var(--font-body);
             cursor: pointer;
-            transition: 0.3s;
+            transition: transform 0.12s ease, box-shadow 0.18s ease;
             width: 100%;
+            box-shadow: 0 6px 16px rgba(232, 147, 74, 0.25);
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 8px 20px rgba(232, 147, 74, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
         }
 
         @media (min-width: 480px) {
@@ -283,18 +722,73 @@
             }
         }
 
-        .nav-link-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--accent-green);
-            text-decoration: none;
-            font-size: 14px;
+        /* ---------- EDIT MODAL ---------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 7, 10, 0.72);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .nav-link-btn:hover {
-            text-decoration: underline;
+        .modal-overlay.active {
+            display: flex;
         }
 
+        .modal-box {
+            background-color: var(--card-bg-alt);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 26px;
+            width: 520px;
+            max-width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lift);
+            animation: modalIn 0.2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13.5px;
+            font-family: var(--font-body);
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.15s ease;
+        }
+
+        .btn-cancel:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 992px) {
             body {
                 flex-direction: column;
@@ -304,18 +798,21 @@
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
-                padding: 20px;
+                padding: 18px 16px;
             }
 
-            .sidebar h2 {
-                margin-bottom: 20px;
-                text-align: center;
+            .brand {
+                padding-bottom: 18px;
+            }
+
+            .nav-eyebrow {
+                display: none;
             }
 
             .menu-list {
                 display: flex;
                 justify-content: center;
-                gap: 15px;
+                gap: 8px;
                 flex-wrap: wrap;
             }
 
@@ -323,8 +820,20 @@
                 margin-bottom: 0;
             }
 
+            .menu-list a.active::before {
+                display: none;
+            }
+
+            .sidebar-foot {
+                display: none;
+            }
+
             .main-content {
-                padding: 20px;
+                padding: 22px 18px 40px;
+            }
+
+            .header h1 {
+                font-size: 26px;
             }
         }
     </style>
@@ -337,46 +846,97 @@
 
 <body>
     <aside class="sidebar">
-        <h2>Admin Hub</h2>
+        <div class="brand">
+            <div class="brand-mark">AH</div>
+            <div class="brand-text">
+                <strong>Admin Hub</strong>
+                <span>Control Panel</span>
+            </div>
+        </div>
+
+        <div class="nav-eyebrow">Bo'limlar</div>
         <ul class="menu-list">
-            <li><a data-target="dashboard-sec" class="active" onclick="switchTab(this)">Dashboard</a></li>
-            <li><a data-target="users-sec" onclick="switchTab(this)">Foydalanuvchilar</a></li>
-            <li><a data-target="products-sec" onclick="switchTab(this)">Mahsulotlar Katalogi</a></li>
+            <li><a data-target="dashboard-sec" class="active" onclick="switchTab(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                    Dashboard
+                </a></li>
+            <li><a data-target="users-sec" onclick="switchTab(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Foydalanuvchilar
+                </a></li>
+            <li><a data-target="products-sec" onclick="switchTab(this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+                    Mahsulotlar Katalogi
+                </a></li>
         </ul>
+
+        <div class="sidebar-foot">AXMINSTEP · v1.0</div>
     </aside>
 
     <main class="main-content">
-        <div
-            style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <a href="index.html" class="nav-link-btn">&#8592; Asosiy sahifaga qaytish</a>
-            <button onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'"
-                style="background: var(--danger); border: none; padding: 8px 16px; border-radius: 4px; color: #fff; cursor: pointer; font-weight: bold;">Chiqish</button>
+        <div class="topbar">
+            <a href="index.html" class="nav-link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                Asosiy sahifaga qaytish
+            </a>
+            <button class="btn-logout" onclick="localStorage.removeItem('isAdminLoggedIn'); window.location.href='index.html'">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Chiqish
+            </button>
         </div>
 
         <div class="header">
-            <h1>Boshqaruv <span style="color: var(--accent-green);">Markazi</span></h1>
-            <p style="color: #666;">Foydalanuvchilarni nazorat qilish va mahsulotlar katalogini sozlash paneli.</p>
+            <div class="eyebrow">Tizim onlayn</div>
+            <h1>Boshqaruv <span>Markazi</span></h1>
+            <p>Foydalanuvchilarni nazorat qilish va mahsulotlar katalogini sozlash paneli.</p>
         </div>
 
         <div class="metrics">
             <div class="card">
-                <div class="card-title">Jami foydalanuvchilar</div>
+                <div class="card-top">
+                    <div class="card-title">Jami foydalanuvchilar</div>
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    </div>
+                </div>
                 <div class="card-value" id="totalUsers">0</div>
             </div>
             <div class="card">
-                <div class="card-title">Katalogdagi mahsulotlar</div>
+                <div class="card-top">
+                    <div class="card-title">Katalogdagi mahsulotlar</div>
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+                    </div>
+                </div>
                 <div class="card-value" id="totalProducts">0</div>
             </div>
             <div class="card">
-                <div class="card-title">Umumiy daromad</div>
+                <div class="card-top">
+                    <div class="card-title">Umumiy daromad</div>
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                </div>
                 <div class="card-value" id="totalRevenue">0 so'm</div>
             </div>
         </div>
 
         <div id="dashboard-sec" class="admin-section active-section">
             <h2 class="section-title">Umumiy statistika va xulosa</h2>
-            <p style="color: #aaa; line-height: 1.6;">Xush kelibsiz! Chap tomondagi menyu orqali foydalanuvchilar
+            <p class="dashboard-intro">Xush kelibsiz! Chap tomondagi menyu orqali foydalanuvchilar
                 ro'yxatini boshqarishingiz yoki xizmatlar/mahsulotlar katalogiga o'zgartirish kiritishingiz mumkin.</p>
+
+            <div class="form-group">
+                <h3>Daromadni boshqarish</h3>
+                <p style="color: var(--text-muted); font-size: 12.5px; margin-bottom: 16px; line-height: 1.5;">Bu summa faqat shu brauzerda saqlanadi — qo'lda kiritilgan tushum/xarajat hisobi.</p>
+                <label for="revenueAmountInput">Summa (so'm)</label>
+                <input type="text" id="revenueAmountInput" placeholder="Masalan: 500000" inputmode="numeric">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-submit" style="background: linear-gradient(155deg, var(--success), #33b394 70%); box-shadow: 0 6px 16px rgba(79,209,174,0.25); flex:1;" onclick="addRevenue()">+ Qo'shish</button>
+                    <button class="btn-submit" style="background: linear-gradient(155deg, var(--danger), #c9424c 70%); box-shadow: 0 6px 16px rgba(239,89,102,0.25); flex:1;" onclick="subtractRevenue()">− Ayirish</button>
+                </div>
+                <button class="btn-cancel" style="margin-top: 10px;" onclick="resetRevenue()">Hisobni nolga tushirish</button>
+            </div>
         </div>
 
         <div id="users-sec" class="admin-section">
@@ -397,10 +957,10 @@
             </div>
 
             <div class="form-group">
-                <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Yangi foydalanuvchi qo'shish</h3>
-                <label for="newUserInput">Email yoki Telefon raqam:</label>
+                <h3>Yangi foydalanuvchi qo'shish</h3>
+                <label for="newUserInput">Email yoki Telefon raqam</label>
                 <input type="text" id="newUserInput" placeholder="+998 90 123 45 67 yoki email">
-                <label for="newUserPassword">Yangi foydalanuvchi uchun parol:</label>
+                <label for="newUserPassword">Yangi foydalanuvchi uchun parol</label>
                 <input type="password" id="newUserPassword" placeholder="Parolni kiriting">
                 <button class="btn-submit" onclick="addUser()">Qo'shish</button>
             </div>
@@ -428,12 +988,12 @@
             </div>
 
             <div class="form-group">
-                <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Katalogga yangi mahsulot qo'shish</h3>
+                <h3>Katalogga yangi mahsulot qo'shish</h3>
 
-                <label for="newProductName">Yangi mahsulot nomi:</label>
+                <label for="newProductName">Yangi mahsulot nomi</label>
                 <input type="text" id="newProductName" placeholder="Masalan: Veb-sayt yaratish xizmati">
 
-                <label for="newProductCategory">Kategoriya tanlang:</label>
+                <label for="newProductCategory">Kategoriya tanlang</label>
                 <select id="newProductCategory">
                     <option value="Qurilish">Qurilish</option>
                     <option value="Texnika & Gadjetlar">Texnika & Gadjetlar</option>
@@ -443,20 +1003,20 @@
                     <option value="Ta'lim & Kurslar">Ta'lim & Kurslar</option>
                 </select>
 
-                <label for="newProductPrice">Narxi:</label>
+                <label for="newProductPrice">Narxi</label>
                 <input type="text" id="newProductPrice" placeholder="Masalan: 5 000 000 so'm">
 
-                <label for="newProductPhone">Aloqa uchun telefon raqam:</label>
+                <label for="newProductPhone">Aloqa uchun telefon raqam</label>
                 <input type="text" id="newProductPhone" placeholder="Masalan: +998 90 123 45 67">
 
-                <label for="newProductDesc">Batafsil ma'lumot (Tavsif):</label>
+                <label for="newProductDesc">Batafsil ma'lumot (Tavsif)</label>
                 <textarea id="newProductDesc" rows="4"
                     placeholder="Xizmat yoki mahsulot haqida to'liqroq ma'lumot kiriting"></textarea>
 
-                <label for="newProductFile">Rasm faylini yuklash (Kompyuterdan):</label>
+                <label for="newProductFile">Rasm faylini yuklash (Kompyuterdan)</label>
                 <input type="file" id="newProductFile" accept="image/*">
 
-                <label for="newProductImage">Yoki Rasm manzili (URL):</label>
+                <label for="newProductImage">Yoki Rasm manzili (URL)</label>
                 <input type="text" id="newProductImage" placeholder="https://picsum.photos/400/300">
 
                 <button class="btn-submit" onclick="addProduct()">Mahsulotni katalogga qo'shish</button>
@@ -464,10 +1024,69 @@
         </div>
     </main>
 
+    <!-- Tahrirlash (Edit) modali -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <h3>Mahsulotni tahrirlash</h3>
+            <input type="hidden" id="editProductId">
+
+            <label for="editProductName">Mahsulot nomi</label>
+            <input type="text" id="editProductName">
+
+            <label for="editProductCategory">Kategoriya</label>
+            <select id="editProductCategory">
+                <option value="Qurilish">Qurilish</option>
+                <option value="Texnika & Gadjetlar">Texnika & Gadjetlar</option>
+                <option value="Avto / Detaling">Avto / Detaling</option>
+                <option value="IT va Dasturlash">IT va Dasturlash</option>
+                <option value="Biznes & Tender">Biznes & Tender</option>
+                <option value="Ta'lim & Kurslar">Ta'lim & Kurslar</option>
+            </select>
+
+            <label for="editProductPrice">Narxi</label>
+            <input type="text" id="editProductPrice">
+
+            <label for="editProductPhone">Telefon raqam</label>
+            <input type="text" id="editProductPhone">
+
+            <label for="editProductDesc">Tavsif</label>
+            <textarea id="editProductDesc" rows="4"></textarea>
+
+            <label for="editProductImage">Rasm manzili (URL)</label>
+            <input type="text" id="editProductImage">
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditModal()">Bekor qilish</button>
+                <button class="btn-submit" onclick="saveProductEdit()">Saqlash</button>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Foydalanuvchini tahrirlash modali -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-box">
+            <h3>Foydalanuvchini tahrirlash</h3>
+            <input type="hidden" id="editUserId">
+            <input type="hidden" id="editUserKey">
+
+            <label for="editUserIdentifier">Email yoki Telefon raqam</label>
+            <input type="text" id="editUserIdentifier">
+
+            <label for="editUserPassword">Yangi parol</label>
+            <input type="password" id="editUserPassword" placeholder="O'zgartirmaslik uchun bo'sh qoldiring">
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeEditUserModal()">Bekor qilish</button>
+                <button class="btn-submit" onclick="saveUserEdit()">Saqlash</button>
+            </div>
+        </div>
+    </div>
 
     <script>
        // Admin paneli uchun asosiy skript
 document.addEventListener("DOMContentLoaded", () => {
+
     const PRODUCT_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/axminstep";
     const USER_API = "https://6a0ed5a31736097c360aa960.mockapi.io/api/names/user";
 
@@ -479,22 +1098,138 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(element.dataset.target).classList.add('active-section');
     };
 
+    let productsCache = [];
+    let usersCache = [];
+
+    const editIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>`;
+    const deleteIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
+    // ---------- Daromad hisoblagichi (localStorage'da saqlanadi) ----------
+    const REVENUE_KEY = 'adminTotalRevenue';
+
+    function getRevenue() {
+        return parseInt(localStorage.getItem(REVENUE_KEY) || '0', 10);
+    }
+
+    function formatSom(n) {
+        return n.toLocaleString('fr-FR').replace(/,/g, ' ') + " so'm";
+    }
+
+    function renderRevenue() {
+        document.getElementById('totalRevenue').textContent = formatSom(getRevenue());
+    }
+
+    window.addRevenue = function() {
+        const input = document.getElementById('revenueAmountInput');
+        const amount = parseInt(input.value.replace(/\s/g, ''), 10);
+        if (!amount || amount <= 0) { alert("Iltimos, to'g'ri summa kiriting."); return; }
+        localStorage.setItem(REVENUE_KEY, String(getRevenue() + amount));
+        input.value = '';
+        renderRevenue();
+    };
+
+    window.subtractRevenue = function() {
+        const input = document.getElementById('revenueAmountInput');
+        const amount = parseInt(input.value.replace(/\s/g, ''), 10);
+        if (!amount || amount <= 0) { alert("Iltimos, to'g'ri summa kiriting."); return; }
+        const newTotal = Math.max(0, getRevenue() - amount);
+        localStorage.setItem(REVENUE_KEY, String(newTotal));
+        input.value = '';
+        renderRevenue();
+    };
+
+    window.resetRevenue = function() {
+        if (confirm("Daromad hisobini nolga tushirmoqchimisiz?")) {
+            localStorage.setItem(REVENUE_KEY, '0');
+            renderRevenue();
+        }
+    };
+
     // Ma'lumotlarni yuklash
     async function loadData() {
         const users = await (await fetch(USER_API)).json();
         const products = await (await fetch(PRODUCT_API)).json();
+        productsCache = products;
+        usersCache = users;
 
         // Statistikani yangilash
         document.getElementById('totalUsers').textContent = users.length;
         document.getElementById('totalProducts').textContent = products.length;
+        renderRevenue();
 
         // Jadvalni to'ldirish
         const userBody = document.getElementById('userTableBody');
-        userBody.innerHTML = users.map(u => `<tr><td>${u.id}</td><td>${u.email || u.phone}</td><td><span class="badge-active">Faol</span></td><td>-</td><td><button class="btn-action delete" onclick="deleteItem('${USER_API}', ${u.id})">O'chirish</button></td></tr>`).join('');
+        userBody.innerHTML = users.map(u => `<tr><td>#${u.id}</td><td>${u.email || u.phone}</td><td><span class="badge-active">Faol</span></td><td>-</td><td><button class="btn-action edit" onclick="openEditUserModal('${u.id}')">${editIcon}Tahrirlash</button><button class="btn-action delete" onclick="deleteItem('${USER_API}', ${u.id})">${deleteIcon}O'chirish</button></td></tr>`).join('');
 
         const prodBody = document.getElementById('productTableBody');
-        prodBody.innerHTML = products.map(p => `<tr><td>${p.id}</td><td><img src="${p.image}" width="50"></td><td>${p.name}</td><td>${p.category}</td><td>${p.price}</td><td>${p.phone}</td><td><span class="desc-text">${p.description}</span></td><td><span class="badge-active">Sotuvda</span></td><td><button class="btn-action delete" onclick="deleteItem('${PRODUCT_API}', ${p.id})">O'chirish</button></td></tr>`).join('');
+        prodBody.innerHTML = products.map(p => `<tr><td>#${p.id}</td><td><img src="${p.image}" width="50"></td><td>${p.name}</td><td><span class="badge-category">${p.category}</span></td><td>${p.price}</td><td>${p.phone}</td><td><span class="desc-text">${p.description}</span></td><td><span class="badge-active">Sotuvda</span></td><td><button class="btn-action edit" onclick="openEditModal('${p.id}')">${editIcon}Tahrirlash</button><button class="btn-action delete" onclick="deleteItem('${PRODUCT_API}', ${p.id})">${deleteIcon}O'chirish</button></td></tr>`).join('');
     }
+
+    // Yangi foydalanuvchi qo'shish
+    window.addUser = async function() {
+        const identifier = document.getElementById('newUserInput').value.trim();
+        const password = document.getElementById('newUserPassword').value;
+        if (!identifier || !password) { alert("Iltimos, barcha maydonlarni to'ldiring."); return; }
+
+        const isEmail = identifier.includes('@');
+        const newUser = isEmail
+            ? { email: identifier, password: password }
+            : { phone: identifier, password: password };
+
+        await fetch(USER_API, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newUser)
+        });
+
+        document.getElementById('newUserInput').value = '';
+        document.getElementById('newUserPassword').value = '';
+        alert("Foydalanuvchi qo'shildi!");
+        loadData();
+    };
+
+    // Foydalanuvchi tahrirlash oynasini ochish
+    window.openEditUserModal = function(id) {
+        const u = usersCache.find(item => String(item.id) === String(id));
+        if (!u) return;
+
+        document.getElementById('editUserId').value = u.id;
+        document.getElementById('editUserKey').value = u.email ? 'email' : 'phone';
+        document.getElementById('editUserIdentifier').value = u.email || u.phone || '';
+        document.getElementById('editUserPassword').value = '';
+
+        document.getElementById('editUserModal').classList.add('active');
+    };
+
+    window.closeEditUserModal = function() {
+        document.getElementById('editUserModal').classList.remove('active');
+    };
+
+    // Tahrirlangan foydalanuvchini saqlash (PUT so'rovi)
+    window.saveUserEdit = async function() {
+        const id = document.getElementById('editUserId').value;
+        const key = document.getElementById('editUserKey').value; // 'email' yoki 'phone'
+        const identifier = document.getElementById('editUserIdentifier').value.trim();
+        const newPassword = document.getElementById('editUserPassword').value;
+
+        if (!identifier) { alert("Iltimos, email yoki telefon raqamni kiriting."); return; }
+
+        const updatedUser = {};
+        updatedUser[key] = identifier;
+        if (newPassword) {
+            updatedUser.password = newPassword;
+        }
+
+        await fetch(`${USER_API}/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(updatedUser)
+        });
+
+        closeEditUserModal();
+        alert("Foydalanuvchi ma'lumotlari yangilandi!");
+        loadData();
+    };
 
     // O'chirish funksiyasi
     window.deleteItem = async function(url, id) {
@@ -520,6 +1255,49 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify(newProduct)
         });
         alert("Mahsulot qo'shildi!");
+        loadData();
+    };
+
+    // Tahrirlash oynasini ochish va mavjud ma'lumotlar bilan to'ldirish
+    window.openEditModal = function(id) {
+        const p = productsCache.find(item => String(item.id) === String(id));
+        if (!p) return;
+
+        document.getElementById('editProductId').value = p.id;
+        document.getElementById('editProductName').value = p.name || '';
+        document.getElementById('editProductCategory').value = p.category || '';
+        document.getElementById('editProductPrice').value = p.price || '';
+        document.getElementById('editProductPhone').value = p.phone || '';
+        document.getElementById('editProductDesc').value = p.description || '';
+        document.getElementById('editProductImage').value = p.image || '';
+
+        document.getElementById('editModal').classList.add('active');
+    };
+
+    window.closeEditModal = function() {
+        document.getElementById('editModal').classList.remove('active');
+    };
+
+    // Tahrirlangan mahsulotni saqlash (PUT so'rovi)
+    window.saveProductEdit = async function() {
+        const id = document.getElementById('editProductId').value;
+        const updatedProduct = {
+            name: document.getElementById('editProductName').value,
+            category: document.getElementById('editProductCategory').value,
+            price: document.getElementById('editProductPrice').value,
+            phone: document.getElementById('editProductPhone').value,
+            description: document.getElementById('editProductDesc').value,
+            image: document.getElementById('editProductImage').value
+        };
+
+        await fetch(`${PRODUCT_API}/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(updatedProduct)
+        });
+
+        closeEditModal();
+        alert("Mahsulot yangilandi!");
         loadData();
     };
 
